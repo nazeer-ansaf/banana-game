@@ -2,20 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banana Game</title>
+    <title>Banana Puzzle Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🍌 Banana Game 🍌</h1>
 
-    <div id="game-container">
-        <!-- Game content goes here -->
-        <p>Click the banana to score points!</p>
-        <button id="banana-button">🍌</button>
-        <p>Score: <span id="score">0</span></p>
+    <h1>🍌 Banana Puzzle Game 🍌</h1>
+
+    <!-- Login Section -->
+    <div id="login-section">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter username">
+        <button id="login-btn">Login</button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Game Section -->
+    <div id="game-section">
+        <p id="welcome-user"></p>
+
+        <img id="puzzle-image" width="300">
+
+        <br><br>
+
+        <input type="number" id="answer-input" placeholder="Enter answer">
+        <button id="submit-btn">Submit</button>
+
+        <p id="result"></p>
+        <p>Score: <span id="score">0</span></p>
+
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <!-- IMPORTANT: Use module type -->
+    <script type="module" src="js/main.js"></script>
+
 </body>
 </html>
