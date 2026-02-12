@@ -2,39 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Banana Puzzle Game</title>
+    <title>🍌 Banana Puzzle Game 🍌</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>🍌 Banana Puzzle Game 🍌</h1>
+    <div id="app">
 
-    <!-- Login Section -->
-    <div id="login-section">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Enter username">
-        <button id="login-btn">Login</button>
+        <!-- Login Section -->
+        <section id="login-section" class="section">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Enter your username">
+            <button id="login-btn">Login</button>
+        </section>
+
+        <!-- Game Section -->
+        <section id="game-section" class="section hidden">
+            <h2 id="welcome-user"></h2>
+
+            <div id="puzzle-container">
+                <img id="puzzle-image" alt="Puzzle Image" width="300">
+            </div>
+
+            <div id="answer-container">
+                <input type="number" id="answer-input" placeholder="Enter answer">
+                <button id="submit-btn">Submit</button>
+            </div>
+
+            <p id="result"></p>
+            <p>Score: <span id="score">0</span></p>
+
+            <button id="logout-btn">Logout</button>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard-section" class="section hidden">
+            <h2>Leaderboard</h2>
+            <ul id="leaderboard-list"></ul>
+        </section>
+
     </div>
 
-    <!-- Game Section -->
-    <div id="game-section">
-        <p id="welcome-user"></p>
-
-        <img id="puzzle-image" width="300">
-
-        <br><br>
-
-        <input type="number" id="answer-input" placeholder="Enter answer">
-        <button id="submit-btn">Submit</button>
-
-        <p id="result"></p>
-        <p>Score: <span id="score">0</span></p>
-
-        <button id="logout-btn">Logout</button>
-    </div>
-
-    <!-- IMPORTANT: Use module type -->
+    <!-- Scripts -->
     <script type="module" src="js/main.js"></script>
-
 </body>
 </html>
