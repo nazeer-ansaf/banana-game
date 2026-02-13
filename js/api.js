@@ -1,9 +1,20 @@
-// api.js
-// Handles communication with Banana API (Interoperability)
+// api.js – Handles communication with Banana API & local fallback
 
+const API_URL = "https://marcconrad.com/uob/banana/api.php";
+
+// Example local fallback puzzles
+const localPuzzles = [
+    { question: "assets/images/puzzle1.png", solution: 7 },
+    { question: "assets/images/puzzle2.png", solution: 12 },
+    { question: "assets/images/puzzle3.png", solution: 5 },
+];
+
+// -------------------------
+// Fetch puzzle from API or fallback
+// -------------------------
 export async function fetchPuzzle() {
     try {
-        const response = await fetch("https://marcconrad.com/uob/banana/api.php");
+        const response = await fetch(API_URL);
 
         if (!response.ok) {
             throw new Error("Network response was not OK");
@@ -12,10 +23,18 @@ export async function fetchPuzzle() {
         const data = await response.json();
         console.log("API Data:", data);
 
-        return data;
+        // Ensure data has question & solution
+        if (data.question && data.solution !== undefined) {
+            return data;
+        } else {
+            throw new Error("Invalid API data");
+        }
 
     } catch (error) {
-        console.error("Error fetching puzzle:", error);
-        return null;
+        console.warn("Error fetching API puzzle, using local fallback:", error);
+
+        // Pick a random puzzle from localPuzzles
+        const randomIndex = Math.floor(Math.random() * localPuzzles.length);
+        return localPuzzles[randomIndex];
     }
 }

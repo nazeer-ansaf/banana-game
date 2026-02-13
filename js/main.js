@@ -1,7 +1,14 @@
+// main.js
 import { fetchPuzzle } from './api.js';
-import { setCorrectAnswer, checkAnswer, getScore } from './game.js';
+import { setCorrectAnswer, checkAnswer, getScore, resetScore } from './game.js';
 import { login, getUser, logout } from './user.js';
+import { startTimer, stopTimer, resetTimer } from './timer.js';
+import { unlockAchievement, resetAchievements } from './gamification.js';
+import { updateLeaderboard, initLeaderboard } from './leaderboard.js';
 
+// -------------------------
+// DOM Elements
+// -------------------------
 const loginSection = document.getElementById("login-section");
 const gameSection = document.getElementById("game-section");
 const loginBtn = document.getElementById("login-btn");
@@ -14,22 +21,58 @@ const scoreDisplay = document.getElementById("score");
 const resultDisplay = document.getElementById("result");
 const welcomeUser = document.getElementById("welcome-user");
 
-// Load puzzle
+// -------------------------
+// Load puzzle function
+// -------------------------
 async function loadPuzzle() {
-    const data = await fetchPuzzle();
+    stopTimer(); // stop any running timer
+    resultDisplay.innerText = ""; // clear previous result
+    answerInput.value = "";
+    answerInput.focus();
 
+    const data = await fetchPuzzle();
     if (data) {
         puzzleImage.src = data.question;
         setCorrectAnswer(data.solution);
+
+        // Start timer with callback when time runs out
+        startTimer(60, async () => {
+            resultDisplay.innerText = "⏰ Time's up! Loading next puzzle...";
+
+            // small delay so user can see message
+            setTimeout(async () => {
+                await loadPuzzle();
+            }, 2000);
+        });
     }
 }
 
-// Handle login
-loginBtn.addEventListener("click", () => {
-    const username = document.getElementById("username").value;
+// -------------------------
+// Show game section
+// -------------------------
+function showGame() {
+    loginSection.classList.add("hidden");
+    gameSection.classList.remove("hidden");
+    document.getElementById("leaderboard-section").classList.remove("hidden");
 
-    if (username.trim() === "") {
-        alert("Please enter username");
+    welcomeUser.innerText = `Welcome, ${getUser()}`;
+
+    resetScore();
+    resetAchievements(); // reset badges for new game
+    scoreDisplay.innerText = getScore();
+
+    initLeaderboard(); // render leaderboard on game start
+
+    loadPuzzle();
+}
+
+// -------------------------
+// Handle Login
+// -------------------------
+loginBtn.addEventListener("click", () => {
+    const username = document.getElementById("username").value.trim();
+    if (!username) {
+        alert("Please enter a username");
         return;
     }
 
@@ -37,36 +80,46 @@ loginBtn.addEventListener("click", () => {
     showGame();
 });
 
-// Handle logout
+// -------------------------
+// Handle Logout
+// -------------------------
 logoutBtn.addEventListener("click", () => {
     logout();
-    location.reload();
+    location.reload(); // reset everything
 });
 
-// Handle answer submission
+// -------------------------
+// Handle Answer Submission
+// -------------------------
 submitBtn.addEventListener("click", async () => {
-    const userAnswer = answerInput.value;
+    const userAnswer = answerInput.value.trim();
+    if (!userAnswer) return;
 
     if (checkAnswer(userAnswer)) {
-        resultDisplay.innerText = "Correct!";
+        resultDisplay.innerText = "✅ Correct!";
         scoreDisplay.innerText = getScore();
-        await loadPuzzle();
-    } else {
-        resultDisplay.innerText = "Wrong! Try again.";
-    }
 
-    answerInput.value = "";
+        // Unlock achievements if any
+        unlockAchievement(getScore());
+
+        // Update leaderboard
+        updateLeaderboard(getUser(), getScore());
+
+        // small delay so user sees message
+        setTimeout(async () => {
+            await loadPuzzle();
+        }, 800);
+    } else {
+        resultDisplay.innerText = "❌ Wrong! Try again.";
+    }
 });
 
-// Show game if logged in
-function showGame() {
-    loginSection.style.display = "none";
-    gameSection.style.display = "block";
-    welcomeUser.innerText = "Welcome, " + getUser();
-    loadPuzzle();
-}
-
+// -------------------------
 // Auto-login if user exists
+// -------------------------
 if (getUser()) {
     showGame();
+} else {
+    // Ensure leaderboard visible even before login (optional)
+    initLeaderboard();
 }
