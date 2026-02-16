@@ -282,7 +282,7 @@ button:active {
     margin-left: 10px;
 }
 
-/* Leaderboard Section - Enhanced */
+/* Leaderboard Section - Fixed */
 #leaderboard-section {
     background: linear-gradient(145deg, #fff2de, #ffe6c9);
     border-radius: 35px;
@@ -295,27 +295,30 @@ button:active {
     color: #9b5e2e;
     font-size: 1.8rem;
     margin-top: 0;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    text-shadow: 1px 1px 0 #a63813; /* Reduced shadow */
 }
 
 #leaderboard-section h2::before {
     content: "👑";
     font-size: 2rem;
-    filter: drop-shadow(2px 2px 0 #f4a261);
+    filter: drop-shadow(1px 1px 0 #f4a261);
 }
 
 #leaderboard-section ul {
     list-style: none;
-    padding: 5px;
+    padding: 0;
+    margin: 0;
 }
 
 #leaderboard-section li {
     background: white;
-    padding: 15px 20px;
-    margin: 10px 0;
+    padding: 12px 25px;
+    margin: 8px 0;
     border-radius: 50px;
     display: flex;
     justify-content: space-between;
@@ -323,13 +326,42 @@ button:active {
     font-weight: 600;
     font-size: 1.2rem;
     border: 2px solid #f4a261;
-    box-shadow: 0 5px 0 #bb7733;
+    box-shadow: 0 3px 0 #bb7733; /* Reduced shadow */
     transition: all 0.2s ease;
+    /* Fix text shadow for better readability */
+    text-shadow: none;
+    color: #4a3b2e;
+}
+
+/* Remove any inherited text shadows */
+#leaderboard-section li * {
+    text-shadow: none;
+}
+
+/* Style for the username part */
+#leaderboard-section li .username {
+    font-weight: 600;
+    color: #5d3a1a;
+    flex: 1;
+    text-align: left;
+}
+
+/* Style for the score part */
+#leaderboard-section li .score {
+    font-weight: 700;
+    color: #e76f51;
+    background: rgba(244, 162, 97, 0.1);
+    padding: 4px 15px;
+    border-radius: 30px;
+    min-width: 50px;
+    text-align: center;
+    margin-left: 15px;
+    border: 1px solid #f4a261;
 }
 
 #leaderboard-section li:hover {
     transform: translateX(5px);
-    box-shadow: 0 7px 0 #bb7733;
+    box-shadow: 0 4px 0 #bb7733;
     border-color: #e76f51;
 }
 
@@ -337,11 +369,25 @@ button:active {
     background: linear-gradient(145deg, #fff1b8, #ffe396);
     border-color: #ffb347;
     font-size: 1.3rem;
+    box-shadow: 0 4px 0 #bb7733;
 }
 
-#leaderboard-section li:first-child::before {
+#leaderboard-section li:first-child .username {
+    color: #7b4a1e;
+    font-weight: 700;
+}
+
+#leaderboard-section li:first-child .score {
+    background: #ffb347;
+    color: white;
+    border-color: #e69123;
+}
+
+#leaderboard-section li:first-child::after {
     content: "⭐";
     margin-right: 10px;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
 }
 
 /* Timer - Enhanced with animations */

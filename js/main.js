@@ -13,6 +13,7 @@ const loginSection = document.getElementById("login-section");
 const gameSection = document.getElementById("game-section");
 const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
+const stopBtn = document.getElementById("stop-btn");
 
 const puzzleImage = document.getElementById("puzzle-image");
 const submitBtn = document.getElementById("submit-btn");
@@ -66,18 +67,31 @@ function showGame() {
     loadPuzzle();
 }
 
+stopBtn.addEventListener("click", finishGame);
+
+function finishGame() {
+    stopTimer();
+    updateLeaderboard(getUser(), getScore());
+
+    alert("Game Finished! Final Score: " + getScore());
+
+    resetScore();
+}
 // -------------------------
 // Handle Login
 // -------------------------
-loginBtn.addEventListener("click", () => {
+loginBtn.addEventListener("click", async () => {
     const username = document.getElementById("username").value.trim();
-    if (!username) {
-        alert("Please enter a username");
+    const password = document.getElementById("password").value.trim();
+
+    if (!username || !password) {
+        alert("Enter username and password");
         return;
     }
 
-    login(username);
-    showGame();
+    if (login(username, password)) {
+        showGame();
+    }
 });
 
 // -------------------------

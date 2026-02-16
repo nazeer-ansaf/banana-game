@@ -1,14 +1,24 @@
-// user.js
-// Handles virtual identity using localStorage
+export async function authUser(username, password, action) {
 
-export function login(username) {
-    localStorage.setItem("bananaUser", username);
-}
+    const response = await fetch("http://localhost/banana-game/login.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            username,
+            password,
+            action
+        })
+    });
 
-export function getUser() {
-    return localStorage.getItem("bananaUser");
-}
+    const data = await response.json();
 
-export function logout() {
-    localStorage.removeItem("bananaUser");
+    if (data.status === "success") {
+        localStorage.setItem("bananaGameUser", username);
+        return true;
+    } else {
+        alert(data.message);
+        return false;
+    }
 }
