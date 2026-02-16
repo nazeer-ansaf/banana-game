@@ -1,7 +1,7 @@
 // main.js
 import { fetchPuzzle } from './api.js';
 import { setCorrectAnswer, checkAnswer, getScore, resetScore } from './game.js';
-import { login, getUser, logout } from './user.js';
+import { authUser, getLoggedInUser, logoutUser } from './user.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
 import { unlockAchievement, resetAchievements } from './gamification.js';
 import { updateLeaderboard, initLeaderboard } from './leaderboard.js';
@@ -12,6 +12,7 @@ import { updateLeaderboard, initLeaderboard } from './leaderboard.js';
 const loginSection = document.getElementById("login-section");
 const gameSection = document.getElementById("game-section");
 const loginBtn = document.getElementById("login-btn");
+const registerBtn = document.getElementById("register-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const stopBtn = document.getElementById("stop-btn");
 
@@ -26,8 +27,8 @@ const welcomeUser = document.getElementById("welcome-user");
 // Load puzzle function
 // -------------------------
 async function loadPuzzle() {
-    stopTimer(); // stop any running timer
-    resultDisplay.innerText = ""; // clear previous result
+    stopTimer();
+    resultDisplay.innerText = "";
     answerInput.value = "";
     answerInput.focus();
 
@@ -36,11 +37,8 @@ async function loadPuzzle() {
         puzzleImage.src = data.question;
         setCorrectAnswer(data.solution);
 
-        // Start timer with callback when time runs out
         startTimer(60, async () => {
             resultDisplay.innerText = "⏰ Time's up! Loading next puzzle...";
-
-            // small delay so user can see message
             setTimeout(async () => {
                 await loadPuzzle();
             }, 2000);
@@ -51,32 +49,55 @@ async function loadPuzzle() {
 // -------------------------
 // Show game section
 // -------------------------
-function showGame() {
+function showGame(user) {
     loginSection.classList.add("hidden");
     gameSection.classList.remove("hidden");
     document.getElementById("leaderboard-section").classList.remove("hidden");
 
-    welcomeUser.innerText = `Welcome, ${getUser()}`;
+    welcomeUser.innerText = `Welcome, ${user.username}`;
 
     resetScore();
-    resetAchievements(); // reset badges for new game
+    resetAchievements();
     scoreDisplay.innerText = getScore();
 
-    initLeaderboard(); // render leaderboard on game start
+    initLeaderboard();
 
     loadPuzzle();
 }
 
+// -------------------------
+// Finish / Stop game
+// -------------------------
 stopBtn.addEventListener("click", finishGame);
 
-function finishGame() {
+async function finishGame() {
     stopTimer();
-    updateLeaderboard(getUser(), getScore());
 
-    alert("Game Finished! Final Score: " + getScore());
+    const user = getLoggedInUser();
+    if (user) {
+        // Save score to backend
+        try {
+            await fetch("http://localhost/banana-game/submit_score.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    user_id: user.id,
+                    score: getScore()
+                })
+            });
+        } catch (err) {
+            console.error("Error saving score:", err);
+        }
+
+        updateLeaderboard(user.username, getScore());
+    }
+
+    alert("🎉 Game Finished! Final Score: " + getScore());
 
     resetScore();
+    resetAchievements();
 }
+
 // -------------------------
 // Handle Login
 // -------------------------
@@ -89,8 +110,30 @@ loginBtn.addEventListener("click", async () => {
         return;
     }
 
-    if (login(username, password)) {
-        showGame();
+    const success = await authUser(username, password, "login");
+    if (success) {
+        const user = getLoggedInUser();
+        showGame(user);
+    }
+});
+
+// -------------------------
+// Handle Register
+// -------------------------
+registerBtn.addEventListener("click", async () => {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!username || !password) {
+        alert("Enter username and password");
+        return;
+    }
+
+    const success = await authUser(username, password, "register");
+    if (success) {
+        alert("✅ Registration successful! You are now logged in.");
+        const user = getLoggedInUser();
+        showGame(user);
     }
 });
 
@@ -98,8 +141,8 @@ loginBtn.addEventListener("click", async () => {
 // Handle Logout
 // -------------------------
 logoutBtn.addEventListener("click", () => {
-    logout();
-    location.reload(); // reset everything
+    logoutUser();
+    location.reload();
 });
 
 // -------------------------
@@ -113,13 +156,13 @@ submitBtn.addEventListener("click", async () => {
         resultDisplay.innerText = "✅ Correct!";
         scoreDisplay.innerText = getScore();
 
-        // Unlock achievements if any
         unlockAchievement(getScore());
 
-        // Update leaderboard
-        updateLeaderboard(getUser(), getScore());
+        const user = getLoggedInUser();
+        if (user) {
+            updateLeaderboard(user.username, getScore());
+        }
 
-        // small delay so user sees message
         setTimeout(async () => {
             await loadPuzzle();
         }, 800);
@@ -131,9 +174,9 @@ submitBtn.addEventListener("click", async () => {
 // -------------------------
 // Auto-login if user exists
 // -------------------------
-if (getUser()) {
-    showGame();
+const currentUser = getLoggedInUser();
+if (currentUser) {
+    showGame(currentUser);
 } else {
-    // Ensure leaderboard visible even before login (optional)
     initLeaderboard();
 }

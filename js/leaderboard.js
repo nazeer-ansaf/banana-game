@@ -1,56 +1,67 @@
-// leaderboard.js – Track scores and display leaderboard
+// leaderboard.js – Full server-backed leaderboard
 
-const leaderboardKey = "bananaGameLeaderboard";
-
-// DOM Element
+// DOM element
 const leaderboardList = document.getElementById("leaderboard-list");
 
 // -------------------------
 // Save score for current user
 // -------------------------
-export function updateLeaderboard(username, score) {
+export async function updateLeaderboard(username, score) {
     if (!username) return;
 
-    // Get existing leaderboard
-    let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+    const user = JSON.parse(localStorage.getItem("bananaGameUser"));
+    if (!user) return;
 
-    // Check if user exists
-    const userIndex = leaderboard.findIndex(entry => entry.username === username);
-    if (userIndex !== -1) {
-        // Update score if higher
-        if (score > leaderboard[userIndex].score) {
-            leaderboard[userIndex].score = score;
-        }
-    } else {
-        leaderboard.push({ username, score });
+    try {
+        // Send score to backend
+        await fetch("http://localhost/banana-game/submit_score.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                user_id: user.id,
+                score: score
+            })
+        });
+
+        // Refresh leaderboard from backend
+        await fetchLeaderboard();
+
+    } catch (err) {
+        console.error("Failed to update leaderboard:", err);
     }
+}
 
-    // Sort descending
-    leaderboard.sort((a, b) => b.score - a.score);
+// -------------------------
+// Fetch top scores from backend
+// -------------------------
+export async function fetchLeaderboard() {
+    try {
+        const response = await fetch("http://localhost/banana-game/get_leaderboard.php");
+        const data = await response.json();
 
-    // Keep top 5
-    leaderboard = leaderboard.slice(0, 5);
-
-    // Save back to localStorage
-    localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
-
-    // Update UI
-    renderLeaderboard();
+        if (data.status === "success" && Array.isArray(data.leaderboard)) {
+            renderLeaderboard(data.leaderboard);
+        } else {
+            renderLeaderboard([]);
+        }
+    } catch (err) {
+        console.error("Error fetching leaderboard:", err);
+        renderLeaderboard([]);
+    }
 }
 
 // -------------------------
 // Render leaderboard in HTML
 // -------------------------
-export function renderLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+export function renderLeaderboard(entries = []) {
     leaderboardList.innerHTML = "";
 
-    if (leaderboard.length === 0) {
+    if (entries.length === 0) {
         leaderboardList.innerHTML = "<li>No scores yet</li>";
         return;
     }
 
-    leaderboard.forEach(entry => {
+    entries.forEach(entry => {
         const li = document.createElement("li");
         li.innerText = `${entry.username}: ${entry.score}`;
         leaderboardList.appendChild(li);
@@ -58,16 +69,20 @@ export function renderLeaderboard() {
 }
 
 // -------------------------
-// Reset leaderboard (optional)
+// Reset leaderboard (optional admin feature)
 // -------------------------
-export function resetLeaderboard() {
-    localStorage.removeItem(leaderboardKey);
-    renderLeaderboard();
+export async function resetLeaderboard() {
+    try {
+        await fetch("http://localhost/banana-game/reset_leaderboard.php");
+        renderLeaderboard([]);
+    } catch (err) {
+        console.error("Failed to reset leaderboard:", err);
+    }
 }
 
 // -------------------------
 // Initialize leaderboard on page load
 // -------------------------
 export function initLeaderboard() {
-    renderLeaderboard();
+    fetchLeaderboard();
 }
