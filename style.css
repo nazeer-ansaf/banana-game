@@ -130,7 +130,8 @@ h2 {
 
 /* Input Fields */
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="password"] {
     width: 100%;
     padding: 15px 20px;
     margin: 10px 0;
@@ -146,7 +147,8 @@ input[type="number"] {
 }
 
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="password"]:focus {
     border-color: #e76f51;
     box-shadow: 0 8px 12px rgba(231, 111, 81, 0.2),
                 0 0 0 3px #e76f51 inset;
@@ -154,7 +156,8 @@ input[type="number"]:focus {
 }
 
 input[type="text"]::placeholder,
-input[type="number"]::placeholder {
+input[type="number"]::placeholder,
+input[type="password"]::placeholder {
     color: #d4a373;
     font-style: italic;
 }
@@ -686,7 +689,8 @@ button:active {
     }
     
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    input[type="password"] {
         background: #3d2c18;
         color: #ffefba;
         border-color: #f4a261;

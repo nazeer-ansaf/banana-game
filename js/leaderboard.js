@@ -1,88 +1,56 @@
-// leaderboard.js – Full server-backed leaderboard
+// Leaderboard functions
 
-// DOM element
-const leaderboardList = document.getElementById("leaderboard-list");
-
-// -------------------------
-// Save score for current user
-// -------------------------
-export async function updateLeaderboard(username, score) {
-    if (!username) return;
-
-    const user = JSON.parse(localStorage.getItem("bananaGameUser"));
-    if (!user) return;
-
-    try {
-        // Send score to backend
-        await fetch("http://localhost/banana-game/submit_score.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({
-                user_id: user.id,
-                score: score
-            })
-        });
-
-        // Refresh leaderboard from backend
-        await fetchLeaderboard();
-
-    } catch (err) {
-        console.error("Failed to update leaderboard:", err);
-    }
+export async function updateLeaderboard(username, userId, score) {
+    const leaderboardList = document.getElementById("leaderboard-list");
+    if (!leaderboardList) return;
+    
+    // Get existing scores from localStorage
+    let scores = JSON.parse(localStorage.getItem("bananaScores")) || [];
+    
+    // Add new score
+    scores.push({
+        username: username,
+        score: score,
+        timestamp: Date.now()
+    });
+    
+    // Sort by score (highest first) and take top 10
+    scores.sort((a, b) => b.score - a.score);
+    scores = scores.slice(0, 10);
+    
+    // Save back to localStorage
+    localStorage.setItem("bananaScores", JSON.stringify(scores));
+    
+    // Update display
+    renderLeaderboard(scores);
 }
 
-// -------------------------
-// Fetch top scores from backend
-// -------------------------
-export async function fetchLeaderboard() {
-    try {
-        const response = await fetch("http://localhost/banana-game/get_leaderboard.php");
-        const data = await response.json();
-
-        if (data.status === "success" && Array.isArray(data.leaderboard)) {
-            renderLeaderboard(data.leaderboard);
-        } else {
-            renderLeaderboard([]);
-        }
-    } catch (err) {
-        console.error("Error fetching leaderboard:", err);
-        renderLeaderboard([]);
-    }
-}
-
-// -------------------------
-// Render leaderboard in HTML
-// -------------------------
-export function renderLeaderboard(entries = []) {
+export function renderLeaderboard(scores) {
+    const leaderboardList = document.getElementById("leaderboard-list");
+    if (!leaderboardList) return;
+    
     leaderboardList.innerHTML = "";
-
-    if (entries.length === 0) {
-        leaderboardList.innerHTML = "<li>No scores yet</li>";
+    
+    if (!scores || scores.length === 0) {
+        leaderboardList.innerHTML = "<li>No scores yet. Be the first!</li>";
         return;
     }
-
-    entries.forEach(entry => {
+    
+    scores.forEach((entry, index) => {
         const li = document.createElement("li");
-        li.innerText = `${entry.username}: ${entry.score}`;
+        
+        let medal = "";
+        if (index === 0) medal = "🥇 ";
+        else if (index === 1) medal = "🥈 ";
+        else if (index === 2) medal = "🥉 ";
+        else medal = `${index + 1}. `;
+        
+        li.innerHTML = `<span>${medal}${entry.username}</span> <span>${entry.score}</span>`;
         leaderboardList.appendChild(li);
     });
 }
 
-// -------------------------
-// Reset leaderboard (optional admin feature)
-// -------------------------
-export async function resetLeaderboard() {
-    try {
-        await fetch("http://localhost/banana-game/reset_leaderboard.php");
-        renderLeaderboard([]);
-    } catch (err) {
-        console.error("Failed to reset leaderboard:", err);
-    }
-}
-
-// -------------------------
-// Initialize leaderboard on page load
-// -------------------------
 export function initLeaderboard() {
-    fetchLeaderboard();
+    const scores = JSON.parse(localStorage.getItem("bananaScores")) || [];
+    renderLeaderboard(scores);
 }

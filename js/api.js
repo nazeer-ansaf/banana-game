@@ -1,17 +1,18 @@
-// api.js – Handles communication with Banana API & local fallback
+// API functions
 
 const API_URL = "https://marcconrad.com/uob/banana/api.php";
 
-// Example local fallback puzzles
 const localPuzzles = [
-    { question: "assets/images/puzzle1.png", solution: 7 },
-    { question: "assets/images/puzzle2.png", solution: 12 },
-    { question: "assets/images/puzzle3.png", solution: 5 },
+    { question: "https://via.placeholder.com/500x300?text=2+%2B+2", solution: 4 },
+    { question: "https://via.placeholder.com/500x300?text=5+%2B+3", solution: 8 },
+    { question: "https://via.placeholder.com/500x300?text=10+-+4", solution: 6 },
+    { question: "https://via.placeholder.com/500x300?text=7+*+2", solution: 14 },
+    { question: "https://via.placeholder.com/500x300?text=9+%2F+3", solution: 3 },
+    { question: "https://via.placeholder.com/500x300?text=12+-+5", solution: 7 },
+    { question: "https://via.placeholder.com/500x300?text=8+*+3", solution: 24 },
+    { question: "https://via.placeholder.com/500x300?text=15+%2F+5", solution: 3 }
 ];
 
-// -------------------------
-// Fetch puzzle from API or fallback
-// -------------------------
 export async function fetchPuzzle() {
     try {
         const response = await fetch(API_URL);
@@ -21,9 +22,7 @@ export async function fetchPuzzle() {
         }
 
         const data = await response.json();
-        console.log("API Data:", data);
-
-        // Ensure data has question & solution
+        
         if (data.question && data.solution !== undefined) {
             return data;
         } else {
@@ -31,9 +30,7 @@ export async function fetchPuzzle() {
         }
 
     } catch (error) {
-        console.warn("Error fetching API puzzle, using local fallback:", error);
-
-        // Pick a random puzzle from localPuzzles
+        console.warn("Using local puzzle:", error);
         const randomIndex = Math.floor(Math.random() * localPuzzles.length);
         return localPuzzles[randomIndex];
     }

@@ -1,61 +1,55 @@
-// game.js – Puzzle Loading, Answer Checking, Level Handling
+// Game logic
 
 let score = 0;
 let correctAnswer = null;
 let currentLevel = 1;
-const maxLevels = 10; // Optional: total levels
+let streak = 0;
+let currentDifficulty = "easy";
 
-// -------------------------
-// Set correct answer for current puzzle
-// -------------------------
-export function setCorrectAnswer(answer) {
+export function setCorrectAnswer(answer, difficulty = "easy") {
     correctAnswer = answer;
+    currentDifficulty = difficulty;
 }
 
-// -------------------------
-// Check user answer
-// Returns true if correct, increments score
-// -------------------------
 export function checkAnswer(userAnswer) {
-    if (parseInt(userAnswer) === parseInt(correctAnswer)) {
-        score++;
-        advanceLevel();
+    if (userAnswer.toString() === correctAnswer.toString()) {
+        let points = currentDifficulty === "easy" ? 10 : 
+                     currentDifficulty === "medium" ? 15 : 20;
+        score += points;
+        streak++;
+        
+        if (streak >= 3 && currentDifficulty !== "hard") {
+            advanceDifficulty();
+            streak = 0;
+        }
+        
         return true;
+    } else {
+        streak = 0;
+        return false;
     }
-    return false;
 }
 
-// -------------------------
-// Get current score
-// -------------------------
+export function advanceDifficulty() {
+    if (currentDifficulty === "easy") currentDifficulty = "medium";
+    else if (currentDifficulty === "medium") currentDifficulty = "hard";
+}
+
+export function getDifficulty() {
+    return currentDifficulty;
+}
+
 export function getScore() {
     return score;
 }
 
-// -------------------------
-// Reset score & level
-// -------------------------
 export function resetScore() {
     score = 0;
     currentLevel = 1;
+    streak = 0;
+    currentDifficulty = "easy";
 }
 
-// -------------------------
-// Handle level progression
-// -------------------------
-export function advanceLevel() {
-    if (currentLevel < maxLevels) {
-        currentLevel++;
-    }
-    // Optional: trigger special event on last level
-    if (currentLevel === maxLevels) {
-        console.log("🎉 Final Level reached!");
-    }
-}
-
-// -------------------------
-// Get current level
-// -------------------------
 export function getLevel() {
-    return currentLevel;
+    return Math.floor(score / 50) + 1;
 }

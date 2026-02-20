@@ -1,118 +1,138 @@
 <?php
+session_start();
 header("Content-Type: application/json");
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
 
-// Database connection
-$conn = new mysqli("localhost", "root", "", "banana_game");
+// Database configuration
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$database = 'banana_game';
+
+// Create connection
+$conn = new mysqli($host, $user, $password, $database);
+
+// Check connection
 if ($conn->connect_error) {
+    die(json_encode([
+        'status' => 'error',
+        'message' => 'Database connection failed: ' . $conn->connect_error
+    ]));
+}
+
+// Get POST data
+$input = json_decode(file_get_contents('php://input'), true);
+
+// If JSON decode fails, try form data
+if (!$input) {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $action = $_POST['action'] ?? '';
+    $email = $_POST['email'] ?? '';
+} else {
+    $username = $input['username'] ?? '';
+    $password = $input['password'] ?? '';
+    $action = $input['action'] ?? '';
+    $email = $input['email'] ?? '';
+}
+
+// Validate input
+if (empty($username) || empty($password) || empty($action)) {
     echo json_encode([
-        "status" => "error",
-        "message" => "Database connection failed"
+        'status' => 'error',
+        'message' => 'Username and password are required'
     ]);
-    exit();
+    exit;
 }
 
-// Check required fields
-if (!isset($_POST['username'], $_POST['password'], $_POST['action'])) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Missing required fields"
-    ]);
-    exit();
-}
-
-$username = trim($_POST['username']);
-$password = trim($_POST['password']);
-$action   = $_POST['action'];
-
-if ($username === "" || $password === "") {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Username and password required"
-    ]);
-    exit();
-}
-
-// Check if user exists
-$stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-
-// =============================
-// REGISTER
-// =============================
-if ($action === "register") {
-    if ($result->num_rows > 0) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "User already exists"
-        ]);
-    } else {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $insert = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $insert->bind_param("ss", $username, $hashedPassword);
-
-        if ($insert->execute()) {
-            $user_id = $insert->insert_id;
-            echo json_encode([
-                "status" => "success",
-                "message" => "Registered successfully",
-                "user" => [
-                    "id" => $user_id,
-                    "username" => $username
-                ]
-            ]);
-        } else {
-            echo json_encode([
-                "status" => "error",
-                "message" => "Registration failed"
-            ]);
-        }
-    }
-}
-
-// =============================
-// LOGIN
-// =============================
-elseif ($action === "login") {
-    if ($result->num_rows === 0) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "User not found"
-        ]);
-    } else {
+// Handle different actions
+if ($action === 'login') {
+    // Login user
+    $stmt = $conn->prepare("SELECT id, username, password FROM users WHERE username = ? OR email = ?");
+$stmt->bind_param("ss", $username, $username); // $username holds username OR email
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
+        
         if (password_verify($password, $user['password'])) {
-            session_start();
-            $_SESSION['username'] = $username;
             $_SESSION['user_id'] = $user['id'];
-
+            $_SESSION['username'] = $user['username'];
+            
             echo json_encode([
-                "status" => "success",
-                "message" => "Login successful",
-                "user" => [
-                    "id" => $user['id'],
-                    "username" => $username
+                'status' => 'success',
+                'message' => 'Login successful',
+                'user' => [
+                    'id' => $user['id'],
+                    'username' => $user['username']
                 ]
             ]);
         } else {
             echo json_encode([
-                "status" => "error",
-                "message" => "Wrong password"
+                'status' => 'error',
+                'message' => 'Invalid password'
             ]);
         }
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'User not found'
+        ]);
     }
-}
-
-// =============================
-// INVALID ACTION
-// =============================
-else {
+    $stmt->close();
+    
+} elseif ($action === 'register') {
+    // Check if user exists
+    $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    $check->bind_param("s", $username);
+    $check->execute();
+    $check->store_result();
+    
+    if ($check->num_rows > 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Username already exists'
+        ]);
+        $check->close();
+        exit;
+    }
+    $check->close();
+    
+    // Hash password and insert new user
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $username, $hashedPassword, $email);
+    
+    if ($stmt->execute()) {
+        $user_id = $stmt->insert_id;
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['username'] = $username;
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Registration successful',
+            'user' => [
+                'id' => $user_id,
+                'username' => $username,
+                'email' => $email
+            ]
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Registration failed: ' . $conn->error
+        ]);
+    }
+    $stmt->close();
+    
+} else {
     echo json_encode([
-        "status" => "error",
-        "message" => "Invalid action"
+        'status' => 'error',
+        'message' => 'Invalid action'
     ]);
 }
 
