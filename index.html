@@ -7,24 +7,41 @@
 </head>
 <body>
 
-    <div id="app">
+<div id="app">
 
-        <!-- Login Section -->
-        <section id="login-section" class="section">
-            <input type="text" id="username" placeholder="Username">
-<input type="password" id="password" placeholder="Password">
+    <!-- ================= LOGIN SECTION ================= -->
+    <section id="login-section" class="section">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="login-btn">Login</button>
+        <button id="register-btn">Register</button>
+    </section>
 
-<button id="login-btn">Login</button>
-<button id="register-btn">Register</button>
+    <!-- ================= GAME SECTION ================= -->
+    <section id="game-section" class="section hidden">
 
-        </section>
+        <h2 id="welcome-user"></h2>
 
-        <!-- Game Section -->
-        <section id="game-section" class="section hidden">
-            <h2 id="welcome-user"></h2>
+        <!-- ===== LEVEL SELECTION ===== -->
+        <div id="level-select">
+            <h3>Select Level</h3>
+
+            <!-- Container for dynamic level buttons -->
+            <div id="level-buttons-container"></div>
+
+            <!-- Level Info -->
+            <div id="level-info"></div>
+        </div>
+
+        <!-- ===== GAME CONTENT ===== -->
+        <div id="game-content" class="hidden">
+
+            <div id="current-level" class="game-header">
+                Level <span id="level-number">1</span>
+            </div>
 
             <div id="puzzle-container">
-                <img id="puzzle-image" alt="Puzzle Image" >
+                <img id="puzzle-image" alt="Puzzle Image">
                 <p>Time Left: <span id="timer">60s</span></p>
             </div>
 
@@ -33,23 +50,44 @@
                 <button id="submit-btn">Submit</button>
             </div>
 
-            <p id="result"></p>
+            <p id="message"></p>
             <p>Score: <span id="score">0</span></p>
+            <p>Wrong Attempts: <span id="wrong-count">0</span></p>
 
             <button id="stop-btn">Stop Game</button>
-
             <button id="logout-btn">Logout</button>
-        </section>
 
-        <!-- Leaderboard Section -->
-        <section id="leaderboard-section" class="section hidden">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboard-list"></ul>
-        </section>
+        </div>
 
-    </div>
+        <!-- ================= STOP GAME SCREEN ================= -->
+        <div id="stop-screen" class="hidden">
 
-    <!-- Scripts -->
-    <script type="module" src="js/main.js"></script>
+            <h2>🏁 Game Stopped!</h2>
+
+            <div class="final-score">
+                Your Score: <span id="final-score">0</span>
+            </div>
+
+            <!-- Leaderboard -->
+            <div id="leaderboard-panel">
+                <h3>🏆 Leaderboard</h3>
+                <ul id="leaderboard-list"></ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="stop-actions">
+                <button id="retry-btn">🔄 Retry</button>
+                <button id="final-logout-btn">🚪 Logout</button>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- Scripts -->
+<script type="module" src="js/main.js"></script>
+
 </body>
 </html>

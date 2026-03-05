@@ -1,28 +1,23 @@
-// Game logic
-
-let score = 0;
+// game.js
+let score = 0;                 // current session score
 let correctAnswer = null;
-let currentLevel = 1;
 let streak = 0;
-let currentDifficulty = "easy";
 
-export function setCorrectAnswer(answer, difficulty = "easy") {
-    correctAnswer = answer;
-    currentDifficulty = difficulty;
+// -------------------------
+// Set correct answer
+// -------------------------
+export function setCorrectAnswer(answer) {
+    correctAnswer = parseInt(answer);
 }
 
+// -------------------------
+// Check user answer
+// -------------------------
 export function checkAnswer(userAnswer) {
-    if (userAnswer.toString() === correctAnswer.toString()) {
-        let points = currentDifficulty === "easy" ? 10 : 
-                     currentDifficulty === "medium" ? 15 : 20;
-        score += points;
+    if (parseInt(userAnswer) === correctAnswer) {
+        // Each correct answer gives 5 points (fixed, no difficulty-based)
+        score += 5;
         streak++;
-        
-        if (streak >= 3 && currentDifficulty !== "hard") {
-            advanceDifficulty();
-            streak = 0;
-        }
-        
         return true;
     } else {
         streak = 0;
@@ -30,26 +25,31 @@ export function checkAnswer(userAnswer) {
     }
 }
 
-export function advanceDifficulty() {
-    if (currentDifficulty === "easy") currentDifficulty = "medium";
-    else if (currentDifficulty === "medium") currentDifficulty = "hard";
+// -------------------------
+// Get current streak
+// -------------------------
+export function getStreak() {
+    return streak;
 }
 
-export function getDifficulty() {
-    return currentDifficulty;
-}
-
+// -------------------------
+// Get current session score
+// -------------------------
 export function getScore() {
     return score;
 }
 
+// -------------------------
+// Reset score and session data
+// -------------------------
 export function resetScore() {
     score = 0;
-    currentLevel = 1;
     streak = 0;
-    currentDifficulty = "easy";
 }
 
-export function getLevel() {
-    return Math.floor(score / 50) + 1;
+// -------------------------
+// Add specific amount to score (used for bonus or adjustments)
+// -------------------------
+export function addScore(points) {
+    score += points;
 }

@@ -1,56 +1,46 @@
-// Leaderboard functions
+// leaderboard.js
 
-export async function updateLeaderboard(username, userId, score) {
-    const leaderboardList = document.getElementById("leaderboard-list");
-    if (!leaderboardList) return;
-    
-    // Get existing scores from localStorage
-    let scores = JSON.parse(localStorage.getItem("bananaScores")) || [];
-    
-    // Add new score
-    scores.push({
-        username: username,
-        score: score,
-        timestamp: Date.now()
-    });
-    
-    // Sort by score (highest first) and take top 10
-    scores.sort((a, b) => b.score - a.score);
-    scores = scores.slice(0, 10);
-    
-    // Save back to localStorage
-    localStorage.setItem("bananaScores", JSON.stringify(scores));
-    
-    // Update display
-    renderLeaderboard(scores);
-}
+// Initialize leaderboard on page load
+export async function initLeaderboard() {
+    const list = document.getElementById("leaderboard-list");
+    list.innerHTML = "Loading...";
 
-export function renderLeaderboard(scores) {
-    const leaderboardList = document.getElementById("leaderboard-list");
-    if (!leaderboardList) return;
-    
-    leaderboardList.innerHTML = "";
-    
-    if (!scores || scores.length === 0) {
-        leaderboardList.innerHTML = "<li>No scores yet. Be the first!</li>";
-        return;
+    try {
+        const res = await fetch("http://localhost/banana_game/submit_score.php");
+        let data = await res.json();
+
+        // Ensure data is an array
+        data = Array.isArray(data) ? data : Object.values(data);
+
+        list.innerHTML = "";
+
+        data.forEach((entry, index) => {
+            const li = document.createElement("li");
+            const username = entry.username ?? "Unknown";
+            const score = entry.score ?? 0;
+
+            // Add medal emojis for top 3
+            let medal = "";
+            if (index === 0) medal = "🥇 ";
+            else if (index === 1) medal = "🥈 ";
+            else if (index === 2) medal = "🥉 ";
+
+            li.innerText = `${medal}${username}: ${score}`;
+            list.appendChild(li);
+        });
+
+    } catch (err) {
+        console.error("Leaderboard error:", err);
+        list.innerHTML = "Failed to load leaderboard";
     }
-    
-    scores.forEach((entry, index) => {
-        const li = document.createElement("li");
-        
-        let medal = "";
-        if (index === 0) medal = "🥇 ";
-        else if (index === 1) medal = "🥈 ";
-        else if (index === 2) medal = "🥉 ";
-        else medal = `${index + 1}. `;
-        
-        li.innerHTML = `<span>${medal}${entry.username}</span> <span>${entry.score}</span>`;
-        leaderboardList.appendChild(li);
-    });
 }
 
-export function initLeaderboard() {
-    const scores = JSON.parse(localStorage.getItem("bananaScores")) || [];
-    renderLeaderboard(scores);
+// Update leaderboard locally after score submission (optional)
+export function updateLeaderboard(username, score) {
+    const list = document.getElementById("leaderboard-list");
+
+    // Create new entry at the top
+    const li = document.createElement("li");
+    li.innerText = `${username}: ${score}`;
+    list.prepend(li);
 }
