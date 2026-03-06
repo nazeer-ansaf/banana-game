@@ -200,6 +200,7 @@ submitBtn.addEventListener('click', async () => {
     if (!userAnswer) return;
 
     if (checkAnswer(userAnswer)) {
+        showMessage('✅ Correct!');
         scoreDisplay.textContent = getScore();
 
         if (getScore() >= currentLevelData.requiredScore) {
@@ -211,6 +212,7 @@ submitBtn.addEventListener('click', async () => {
     } else {
         wrongAttempts++;
         wrongCountDisplay.textContent = wrongAttempts;
+        showMessage('❌ Wrong!');
 
         if (wrongAttempts >= currentLevelData.maxWrong) {
             handleLevelFailure();
