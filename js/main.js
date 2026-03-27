@@ -4,10 +4,9 @@ import { setCorrectAnswer, checkAnswer, getScore, resetScore } from './game.js';
 import { startTimer, stopTimer } from './timer.js';
 import { unlockAchievement } from './gamification.js';
 import { updateLeaderboard, initLeaderboard } from './leaderboard.js';
+import { authUser, getLoggedInUser, logoutUser } from './user.js';
 
-// ==========================================
 // LEVEL CONFIGURATION
-// ==========================================
 const levelsConfig = [
     { level: 1, time: 120, requiredScore: 20, maxWrong: 5 },
     { level: 2, time: 100, requiredScore: 35, maxWrong: 4 },
@@ -26,18 +25,25 @@ let currentLevelData = null;
 let wrongAttempts = 0;
 let levelActive = false;
 
-// ==========================================
 // DOM ELEMENTS
-// ==========================================
 const loginSection = document.getElementById('login-section');
 const gameSection = document.getElementById('game-section');
 const welcomeUser = document.getElementById('welcome-user');
 
+// LOGIN INPUTS
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 const loginBtn = document.getElementById('login-btn');
+const rememberMeCheckbox = document.getElementById('remember-me');
+
+// REGISTER INPUTS
+const regUsernameInput = document.getElementById('reg-username');
+const regPasswordInput = document.getElementById('reg-password');
 const registerBtn = document.getElementById('register-btn');
+const regRememberMeCheckbox = document.getElementById('reg-remember-me');
+
 const logoutBtn = document.getElementById('logout-btn');
+const finalLogoutBtn = document.getElementById('final-logout-btn');
 
 const levelButtonsContainer = document.getElementById('level-buttons-container');
 const levelSelectDiv = document.getElementById('level-select');
@@ -54,77 +60,79 @@ const stopBtn = document.getElementById('stop-btn');
 const stopScreen = document.getElementById('stop-screen');
 const finalScoreDisplay = document.getElementById('final-score');
 const retryBtn = document.getElementById('retry-btn');
-const finalLogoutBtn = document.getElementById('final-logout-btn');
 
-// ==========================================
+const plantImage = document.getElementById('plant-animation');
+
 // INITIALIZE
-// ==========================================
 initLeaderboard();
 
+// LOGIN / REGISTER TOGGLE HANDLING
+document.getElementById('show-register').addEventListener('click', e => {
+    e.preventDefault();
+    loginSection.querySelector('#login-form').classList.add('hidden');
+    loginSection.querySelector('#register-form').classList.remove('hidden');
+});
+
+document.getElementById('back-to-login').addEventListener('click', e => {
+    e.preventDefault();
+    loginSection.querySelector('#register-form').classList.add('hidden');
+    loginSection.querySelector('#login-form').classList.remove('hidden');
+});
+
+// CHECK REMEMBER ME ON LOAD
 document.addEventListener('DOMContentLoaded', () => {
-    const username = sessionStorage.getItem('loggedInUser');
-    if (username) {
-        welcomeUser.textContent = `Welcome, ${username}!`;
+    const user = getLoggedInUser();
+    if (user) {
+        welcomeUser.textContent = `Welcome ${user.username} 🍌`;
         showGame();
         renderLevelButtons();
     }
 });
 
-// ==========================================
-// LOGIN / REGISTER
-// ==========================================
-loginBtn.addEventListener('click', () => {
-    authUser(usernameInput.value.trim(), passwordInput.value.trim(), 'login');
-});
+// MANUAL LOGIN
+loginBtn.addEventListener('click', async () => {
+    const user = await authUser(
+        usernameInput.value.trim(),
+        passwordInput.value.trim(),
+        'login',
+        rememberMeCheckbox.checked
+    );
 
-registerBtn.addEventListener('click', () => {
-    authUser(usernameInput.value.trim(), passwordInput.value.trim(), 'register');
-});
-
-logoutBtn?.addEventListener('click', () => {
-    sessionStorage.clear();
-    location.reload();
-});
-
-finalLogoutBtn?.addEventListener('click', () => {
-    sessionStorage.clear();
-    location.reload();
-});
-
-async function authUser(username, password, action) {
-    if (!username || !password) return;
-
-    try {
-        const res = await fetch('login.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=${action}`
-        });
-
-        const data = await res.json();
-
-        if (data.status === 'success') {
-            sessionStorage.setItem('loggedInUser', data.user.username);
-            welcomeUser.textContent = `Welcome, ${data.user.username}!`;
-            showGame();
-            renderLevelButtons();
-        } else {
-            showMessage(data.message);
-        }
-    } catch {
-        showMessage('Login/Register failed');
+    if (user) {
+        welcomeUser.textContent = `Welcome ${user.username} 🍌`;
+        showGame();
+        renderLevelButtons();
     }
-}
+});
 
+// REGISTER USER
+registerBtn.addEventListener('click', async () => {
+    const user = await authUser(
+        regUsernameInput.value.trim(),
+        regPasswordInput.value.trim(),
+        'register',
+        regRememberMeCheckbox.checked
+    );
+
+    if (user) {
+        welcomeUser.textContent = `Welcome ${user.username} 🍌`;
+        showGame();
+        renderLevelButtons();
+    }
+});
+
+// LOGOUT
+logoutBtn?.addEventListener('click', logoutUser);
+finalLogoutBtn?.addEventListener('click', logoutUser);
+
+// SHOW GAME SECTION
 function showGame() {
     loginSection.style.display = 'none';
     gameSection.style.display = 'block';
 }
 
-// ==========================================
 // LEVEL BUTTONS
-// ==========================================
-function renderLevelButtons() {
+export function renderLevelButtons() {
     levelButtonsContainer.innerHTML = '';
 
     levelsConfig.forEach((lvl, index) => {
@@ -132,7 +140,6 @@ function renderLevelButtons() {
         btn.classList.add('level-btn');
         btn.innerHTML = `Level ${lvl.level} <br> ⏳ ${lvl.time}s 🎯 ${lvl.requiredScore} ❌ ${lvl.maxWrong}`;
 
-        // Lock all levels except first or highest unlocked
         if (index !== 0) btn.disabled = true;
 
         btn.addEventListener('click', () => {
@@ -146,9 +153,7 @@ function renderLevelButtons() {
     });
 }
 
-// ==========================================
 // START LEVEL
-// ==========================================
 function startLevel() {
     currentLevelData = levelsConfig[currentLevelIndex];
     wrongAttempts = 0;
@@ -166,17 +171,13 @@ function startLevel() {
     loadPuzzle();
 }
 
-// ==========================================
 // UPDATE UI
-// ==========================================
 function updateUI() {
     scoreDisplay.textContent = getScore();
     wrongCountDisplay.textContent = wrongAttempts;
 }
 
-// ==========================================
 // LOAD PUZZLE
-// ==========================================
 async function loadPuzzle() {
     answerInput.value = '';
     answerInput.focus();
@@ -190,9 +191,7 @@ async function loadPuzzle() {
     }
 }
 
-// ==========================================
 // SUBMIT ANSWER
-// ==========================================
 submitBtn.addEventListener('click', async () => {
     if (!levelActive) return;
 
@@ -202,37 +201,32 @@ submitBtn.addEventListener('click', async () => {
     if (checkAnswer(userAnswer)) {
         showMessage('✅ Correct!');
         scoreDisplay.textContent = getScore();
+        if (plantImage) plantImage.src = "https://media.giphy.com/media/l0MYB8Ory7Hqefo9a/giphy.gif";
 
         if (getScore() >= currentLevelData.requiredScore) {
             handleLevelSuccess();
             return;
         }
-
         await loadPuzzle();
     } else {
         wrongAttempts++;
         wrongCountDisplay.textContent = wrongAttempts;
         showMessage('❌ Wrong!');
-
-        if (wrongAttempts >= currentLevelData.maxWrong) {
-            handleLevelFailure();
-        }
+        if (wrongAttempts >= currentLevelData.maxWrong) handleLevelFailure();
     }
 });
 
-// ==========================================
-// STOP BUTTON
-// ==========================================
+// STOP GAME
 stopBtn.addEventListener('click', () => {
     if (!levelActive) return;
 
     stopTimer();
     levelActive = false;
 
-    const username = sessionStorage.getItem('loggedInUser');
+    const user = getLoggedInUser();
     const currentScore = getScore();
 
-    updateLeaderboard(username, currentScore);
+    updateLeaderboard(user?.username || "Guest", currentScore);
 
     finalScoreDisplay.textContent = currentScore;
 
@@ -240,13 +234,10 @@ stopBtn.addEventListener('click', () => {
     levelSelectDiv.classList.add('hidden');
     stopScreen.classList.remove('hidden');
 
-    // Load full leaderboard from server
     initLeaderboard();
 });
 
-// ==========================================
-// RETRY BUTTON
-// ==========================================
+// RETRY
 retryBtn.addEventListener('click', () => {
     stopScreen.classList.add('hidden');
     levelSelectDiv.classList.remove('hidden');
@@ -262,9 +253,7 @@ retryBtn.addEventListener('click', () => {
     renderLevelButtons();
 });
 
-// ==========================================
 // LEVEL SUCCESS
-// ==========================================
 function handleLevelSuccess() {
     if (!levelActive) return;
 
@@ -272,19 +261,13 @@ function handleLevelSuccess() {
     levelActive = false;
 
     unlockAchievement(`Level ${currentLevelData.level} Complete`);
-
     currentLevelIndex++;
 
-    if (currentLevelIndex < levelsConfig.length) {
-        setTimeout(() => startLevel(), 1500);
-    } else {
-        handleGameVictory();
-    }
+    if (currentLevelIndex < levelsConfig.length) setTimeout(() => startLevel(), 1500);
+    else handleGameVictory();
 }
 
-// ==========================================
 // LEVEL FAILURE
-// ==========================================
 function handleLevelFailure() {
     stopTimer();
     levelActive = false;
@@ -299,14 +282,11 @@ function handleLevelFailure() {
     renderLevelButtons();
 }
 
-// ==========================================
 // GAME VICTORY
-// ==========================================
 function handleGameVictory() {
-    const username = sessionStorage.getItem('loggedInUser');
-
+    const user = getLoggedInUser();
     unlockAchievement('Game Completed');
-    updateLeaderboard(username, getScore());
+    updateLeaderboard(user?.username || "Guest", getScore());
 
     currentLevelIndex = 0;
 
@@ -316,12 +296,21 @@ function handleGameVictory() {
     showMessage('🎉 You completed all levels!');
 }
 
-// ==========================================
 // SHOW MESSAGE
-// ==========================================
 function showMessage(text) {
     messageDisplay.textContent = text;
     setTimeout(() => {
         messageDisplay.textContent = '';
     }, 2000);
+}
+
+// SOCIAL LOGIN (Google)
+export function googleLogin(user) {
+    if (!user) return;
+
+    localStorage.setItem("bananaGameUser", JSON.stringify(user));
+
+    welcomeUser.textContent = `Welcome, ${user.username} 🍌`;
+    showGame();
+    renderLevelButtons();
 }

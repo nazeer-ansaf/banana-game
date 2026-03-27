@@ -3,102 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍌 Banana Puzzle Game 🍌</title>
+    <title>Banana Puzzle Garden</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div id="app">
+<div id="app">
 
-        <!-- ================= LOGIN SECTION ================= -->
-        <section id="login-section" class="section">
-            <input type="text" id="username" placeholder="Username" aria-label="Username">
-            <input type="password" id="password" placeholder="Password" aria-label="Password">
+    <!-- LOGIN SECTION -->
+<section id="login-section" class="section">
+    <h2 class="game-title">Banana Puzzle Garden</h2>
+
+    <!-- Login Form -->
+    <div id="login-form">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+
+        <label class="remember">
+            <input type="checkbox" id="remember-me"> Remember Me
+        </label>
+
+        <div>
             <button id="login-btn">Login</button>
-            <button id="register-btn">Register</button>
-        </section>
+        </div>
 
-        <!-- ================= GAME SECTION ================= -->
-        <section id="game-section" class="section hidden">
+        <p class="login-links">
+            <a href="#" id="forgot-password">Forgot Password?</a>
+        </p>
+        <p class="login-links">
+            Don't have an account? <a href="#" id="show-register">Sign up</a>
+        </p>
+    </div>
 
-            <!-- Welcome -->
-            <h2 id="welcome-user"></h2>
+    <!-- Register Form -->
+    <div id="register-form" class="hidden">
+        <input type="text" id="reg-username" placeholder="Username">
+        <input type="password" id="reg-password" placeholder="Password">
 
-            <!-- LEVEL SELECTION -->
-            <div id="level-select">
-                <h3>Select Level</h3>
-                <div id="level-buttons-container"></div>
-                <div id="level-info"></div>
-            </div>
+        <label class="remember">
+            <input type="checkbox" id="reg-remember-me"> Remember Me
+        </label>
 
-            <!-- GAME CONTENT -->
-            <div id="game-content" class="hidden">
-                
+        <div>
+            <button id="register-btn">Create Account</button>
+        </div>
 
-                <!-- Level Indicator -->
+        <p class="login-links">
+            Already have an account? <a href="#" id="back-to-login">Login</a>
+        </p>
+    </div>
+
+    <!-- SOCIAL LOGIN (Visible for both forms) -->
+    <div class="social-login">
+        <p>Or continue with:</p>
+
+        <div id="g_id_onload"
+             data-client_id="838747220003-id9pi7vjc4lltnai8gct83sg3e65h79f.apps.googleusercontent.com"
+             data-ux_mode="popup"
+             data-auto_prompt="false"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin"></div>
+    </div>
+</section>
+
+
+    <!-- GAME SECTION -->
+    <section id="game-section" class="section hidden">
+
+        <h2 id="welcome-user"></h2>
+
+        <div id="level-select">
+            <h3>Select Level</h3>
+            <div id="level-buttons-container"></div>
+        </div>
+
+        <div id="game-content" class="hidden">
+            <div class="score-display">
                 <div id="current-level" class="game-header">
                     Level <span id="level-number">1</span>
                 </div>
-
-                <!-- Puzzle Container -->
-                <div id="puzzle-container">
-                    <img id="puzzle-image" alt="Puzzle Image">
-                    <p>Time Left: <span id="timer">60s</span></p>
+                <div class="score-badge">
+                    Score <span id="score">0</span>
                 </div>
-
-                <!-- Toast message -->
-                <p id="message"></p>
-
-                <!-- Answer Input -->
-                <div id="answer-container">
-                    <input type="number" id="answer-input" placeholder="Enter answer" aria-label="Answer input">
-                    <button id="submit-btn">Submit</button>
+                <div class="score-badge wrong">
+                    Attempts <span id="wrong-count">0</span>
                 </div>
-
-                <!-- Score & Attempts -->
-                <div class="score-display">
-
-    <div class="score-badge">
-        🍌 Score
-        <span id="score">0</span>
-    </div>
-
-    <div class="score-badge wrong">
-        ❌ Attempts
-        <span id="wrong-count">0</span>
-    </div>
-
-</div>
-                <!-- Action Buttons -->
-                <button id="stop-btn">Stop Game</button>
-                <button id="logout-btn">Logout</button>
+                <div id="timer-container"><span id="timer">60s</span></div>
             </div>
 
-            <!-- STOP SCREEN -->
-            <div id="stop-screen" class="hidden stop-panel">
+            <p id="message"></p>
 
-    <h2 class="stop-title">🏁 Game Finished</h2>
+            <div id="puzzle-container">
+                <img id="puzzle-image" alt="Puzzle Image">
+            </div>
 
-    <div class="final-score-card">
-        🍌 Your Score
-        <span id="final-score">0</span>
-    </div>
+            <div id="answer-container">
+                <input type="number" id="answer-input" placeholder="Enter answer">
+                <button id="submit-btn">Submit</button>
+            </div>
 
-    <div id="leaderboard-panel">
-        <h3 class="leaderboard-title">👑 Leaderboard</h3>
-        <ul id="leaderboard-list"></ul>
-    </div>
+            <button id="stop-btn">Stop Game</button>
+            <button id="logout-btn">Logout</button>
+        </div>
 
-    <div class="stop-actions">
-        <button id="retry-btn">🔄 Play Again</button>
-        <button id="final-logout-btn">🚪 Logout</button>
-    </div>
+        <div id="stop-screen" class="hidden stop-panel">
+            <h2 class="stop-title">Game Finished</h2>
+
+            <div class="final-score-card">
+                Your Score <span id="final-score">0</span>
+            </div>
+
+            <div id="leaderboard-panel">
+                <h3 class="leaderboard-title">Leaderboard</h3>
+                <ul id="leaderboard-list"></ul>
+            </div>
+
+            <div class="stop-actions">
+                <button id="retry-btn">Play Again</button>
+                <button id="final-logout-btn">Logout</button>
+            </div>
+        </div>
+
+    </section>
 
 </div>
 
-        </section>
-    </div>
+<!-- JS Modules -->
+<script type="module" src="js/user.js"></script>
+<script type="module" src="js/main.js"></script>
 
-    <!-- Scripts -->
-    <script type="module" src="js/main.js"></script>
+<script type="module">
+import { socialAuthUser } from './js/user.js';
+import { renderLevelButtons } from './js/main.js';
+
+window.handleCredentialResponse = async (response) => {
+    try {
+        const data = JSON.parse(atob(response.credential.split('.')[1]));
+        const user = await socialAuthUser({
+            username: data.name,
+            email: data.email,
+            socialId: data.sub,
+            rememberMe: true
+        });
+
+        if (user) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('game-section').classList.remove('hidden');
+            document.getElementById('welcome-user').innerText = `Welcome ${user.username}`;
+            renderLevelButtons();
+        }
+    } catch (err) {
+        console.error("Social login error:", err);
+        alert("Something went wrong during social login");
+    }
+};
+</script>
+
 </body>
 </html>
