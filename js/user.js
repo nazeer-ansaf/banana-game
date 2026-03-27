@@ -9,6 +9,35 @@ export function validatePassword(password) {
     return strongPassword.test(password);
 }
 
+export function getPasswordChecks(password) {
+    return {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[@$!%*?&]/.test(password)
+    };
+}
+
+export function getPasswordStrength(password) {
+    const checks = getPasswordChecks(password);
+    const score = Object.values(checks).filter(Boolean).length;
+
+    if (!password) {
+        return { score: 0, label: "Choose a strong password", tone: "empty", checks };
+    }
+
+    if (score <= 2) {
+        return { score, label: "Weak password", tone: "weak", checks };
+    }
+
+    if (score === 3 || score === 4) {
+        return { score, label: "Good progress", tone: "medium", checks };
+    }
+
+    return { score, label: "Strong password", tone: "strong", checks };
+}
+
 // ================================
 // AUTHENTICATE USER (LOGIN / REGISTER)
 // ================================
@@ -97,6 +126,30 @@ export function logoutUser() {
 // CREATE NEW USER (Optional Wrapper)
 // ================================
 export async function createUser(username, password, rememberMe = false) {
+    return await authUser(username, password, "register", rememberMe);
+}
+
+export async function registerUser({
+    username,
+    password,
+    confirmPassword,
+    rememberMe = false
+}) {
+    if (!username || !password || !confirmPassword) {
+        alert("Username, password, and confirm password are required");
+        return null;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        return null;
+    }
+
+    if (!validatePassword(password)) {
+        alert("Password must contain uppercase, lowercase, number, and special character.");
+        return null;
+    }
+
     return await authUser(username, password, "register", rememberMe);
 }
 
