@@ -2,6 +2,7 @@
 session_start();
 
 require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/mail_helper.php";
 
 $message = "";
 $messageClass = "";
@@ -47,8 +48,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $messageClass !== "error") {
                     $destination
                 );
                 $deliveryLabel = $deliveryMethod === "sms" ? "SMS" : "Email";
-                $message = "Reset code created. In local preview mode the code is shown below so you can test the flow.";
-                $messageClass = "success";
+
+                if ($deliveryMethod === "email") {
+                    $mailResult = banana_game_send_reset_email(
+                        $destination,
+                        (string) $user["username"],
+                        $previewCode
+                    );
+
+                    if ($mailResult["ok"]) {
+                        $message = "Reset code sent to your email address.";
+                        $messageClass = "success";
+                        $previewCode = "";
+                    } else {
+                        $message = "Email sending is not active yet, so local preview mode is being used. " . $mailResult["message"];
+                        $messageClass = "success";
+                    }
+                } else {
+                    $message = "SMS sending is not connected yet, so local preview mode is being used.";
+                    $messageClass = "success";
+                }
             }
         }
     }
@@ -99,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $messageClass !== "error") {
             <button type="submit">Send Reset Code</button>
         </form>
 
-        <p class="auth-meta">Local preview mode is active now. When SMTP or SMS provider credentials are added later, this same flow can deliver real messages.</p>
+        <p class="auth-meta">For email reset, add your SMTP settings in <code>mail_config.php</code> and set <code>enabled</code> to <code>true</code>. SMS reset still needs a provider like Twilio.</p>
 
         <div class="auth-actions">
             <a href="reset_password.php" class="auth-link-btn">I Have A Code</a>

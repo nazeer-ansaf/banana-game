@@ -4248,6 +4248,11 @@ hr.separator {
     align-items: flex-start;
 }
 
+.play-shell {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
 body.result-open {
     overflow: hidden;
 }
@@ -4258,6 +4263,8 @@ body.result-open {
 
 .result-shell {
     width: 100%;
+    padding-top: 12px;
+    padding-bottom: 14px;
 }
 
 .result-page-panel {
@@ -4265,18 +4272,36 @@ body.result-open {
     inset: auto !important;
     padding: 0 !important;
     display: block !important;
-    margin-top: 20px;
+    margin-top: 0;
     background: transparent !important;
     backdrop-filter: none !important;
     animation: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
 }
 
 .result-page-panel .stop-panel-card {
     max-height: none;
+    overflow: visible;
+    padding: 24px 24px 22px;
+    border-radius: 34px;
 }
 
 .result-actions {
-    margin-top: 24px;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
+.result-actions .dashboard-action-link {
+    min-height: 56px;
+}
+
+.result-actions .dashboard-action-link.secondary {
+    background: linear-gradient(145deg, #866846, #64492e);
+    box-shadow: 0 10px 0 #47311f, 0 14px 24px rgba(0,0,0,0.12);
 }
 
 .play-header {
@@ -4318,7 +4343,7 @@ body.result-open {
 .play-main {
     display: grid;
     gap: 14px;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto auto auto;
 }
 
 .play-main #puzzle-container {
@@ -4329,17 +4354,17 @@ body.result-open {
 
 .puzzle-stage {
     width: 100%;
-    min-height: min(54vh, 560px);
+    min-height: min(46vh, 500px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px 20px;
 }
 
 .play-main #puzzle-image {
     width: auto;
     max-width: 100%;
-    max-height: min(46vh, 430px);
+    max-height: min(40vh, 390px);
     object-fit: contain;
 }
 
@@ -4351,7 +4376,7 @@ body.result-open {
     justify-content: center;
     max-width: 620px;
     width: 100%;
-    margin: 0 auto;
+    margin: 4px auto 0;
     padding: 8px 10px;
     border-radius: 26px;
     background:
@@ -4421,6 +4446,22 @@ body.result-open {
     box-shadow:
         inset 0 0 0 1px rgba(255,255,255,0.04),
         0 24px 48px rgba(0,0,0,0.32);
+}
+
+.result-page-panel .stop-title {
+    margin-bottom: 14px;
+}
+
+.result-page-panel .stop-subtitle {
+    margin-bottom: 16px;
+}
+
+.result-page-panel .final-score-card {
+    margin: 18px auto 22px;
+}
+
+.result-page-panel #leaderboard-panel {
+    margin: 18px 0 0;
 }
 
 .campaign-page-topbar {
@@ -4962,6 +5003,10 @@ body.result-open {
     }
 
     .result-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-actions {
         grid-template-columns: 1fr;
     }
 }

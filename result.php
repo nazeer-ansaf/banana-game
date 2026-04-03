@@ -14,23 +14,11 @@ $userId = (int) $_SESSION["user_id"];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banana Puzzle Garden Result</title>
-    <link rel="stylesheet" href="style.css?v=20260403b">
+    <link rel="stylesheet" href="style.css?v=20260403d">
 </head>
 <body class="result-page">
 <div id="app" class="play-app">
     <section class="section play-shell result-shell">
-        <div class="play-header">
-            <div class="play-header-copy">
-                <p class="welcome-kicker">Run Summary</p>
-                <h2 id="result-page-title">Run Finished</h2>
-                <p id="result-page-subtitle" class="welcome-subtext">Your score has been saved.</p>
-            </div>
-            <div class="play-header-actions">
-                <a href="dashboard.php" class="dashboard-action-link secondary">Back to Dashboard</a>
-                <a id="result-play-again-top" href="play.php?mode=campaign" class="dashboard-action-link">Play Again</a>
-            </div>
-        </div>
-
         <section class="stop-panel result-page-panel">
             <div class="stop-panel-card">
                 <h2 class="stop-title" id="result-panel-title">Run Finished</h2>
@@ -71,6 +59,7 @@ $userId = (int) $_SESSION["user_id"];
                 <div class="stop-actions result-actions">
                     <a href="dashboard.php" class="dashboard-action-link">Return to Dashboard</a>
                     <a id="result-play-again" href="play.php?mode=campaign" class="dashboard-action-link">Play Again</a>
+                    <button type="button" id="result-logout-btn" class="dashboard-action-link secondary">Logout</button>
                 </div>
             </div>
         </section>
@@ -83,6 +72,6 @@ window.BANANA_USER = {
     username: <?php echo json_encode($_SESSION["username"]); ?>
 };
 </script>
-<script type="module" src="js/result-page.js?v=20260403b"></script>
+<script type="module" src="js/result-page.js?v=20260403d"></script>
 </body>
 </html>
