@@ -41,7 +41,7 @@ export function getPasswordStrength(password) {
 // ================================
 // AUTHENTICATE USER (LOGIN / REGISTER)
 // ================================
-export async function authUser(username, password, action = "login", rememberMe = false) {
+export async function authUser(username, password, action = "login", rememberMe = false, extraFields = {}) {
     if (!username || !password) {
         alert("Username and password are required");
         return null;
@@ -62,7 +62,8 @@ export async function authUser(username, password, action = "login", rememberMe 
             body: new URLSearchParams({
                 username,
                 password,
-                action
+                action,
+                ...extraFields
             })
         });
 
@@ -117,9 +118,7 @@ export function getLoggedInUser() {
 export function logoutUser() {
     sessionStorage.removeItem("bananaGameUser");
     localStorage.removeItem("bananaGameUser");
-
-    // Redirect to login section
-    location.reload();
+    window.location.href = "logout.php";
 }
 
 // ================================
@@ -131,6 +130,8 @@ export async function createUser(username, password, rememberMe = false) {
 
 export async function registerUser({
     username,
+    email = "",
+    phoneNumber = "",
     password,
     confirmPassword,
     rememberMe = false
@@ -150,7 +151,10 @@ export async function registerUser({
         return null;
     }
 
-    return await authUser(username, password, "register", rememberMe);
+    return await authUser(username, password, "register", rememberMe, {
+        email,
+        phone_number: phoneNumber
+    });
 }
 
 export async function socialAuthUser({ username, email, socialId, rememberMe = true }) {

@@ -4,13 +4,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
 
-$conn = new mysqli("localhost", "root", "", "banana_game");
-if ($conn->connect_error) {
-    echo json_encode([
+require_once __DIR__ . "/db.php";
+
+try {
+    $conn = banana_game_db();
+} catch (RuntimeException $exception) {
+    banana_game_respond([
         "status" => "error",
-        "message" => "Database connection failed"
+        "message" => $exception->getMessage()
     ]);
-    exit();
 }
 
 if (!isset($_POST['action'])) {
@@ -76,8 +78,8 @@ if ($action === "register" || $action === "login") {
         ]);
     }
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
+    $stmt->bind_param("ss", $username, $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -89,12 +91,19 @@ if ($action === "register" || $action === "login") {
             ]);
         }
 
+        $email = trim($_POST['email'] ?? '');
+        $phoneNumber = trim($_POST['phone_number'] ?? '');
+        $email = $email !== "" ? $email : null;
+        $phoneNumber = $phoneNumber !== "" ? $phoneNumber : null;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $insert = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $insert->bind_param("ss", $username, $hashedPassword);
+        $insert = $conn->prepare(
+            "INSERT INTO users (username, password, email, phone_number) VALUES (?, ?, ?, ?)"
+        );
+        $insert->bind_param("ssss", $username, $hashedPassword, $email, $phoneNumber);
 
         if ($insert->execute()) {
             $user_id = $insert->insert_id;
+            banana_game_create_profile_if_missing($conn, $user_id);
             $_SESSION['username'] = $username;
             $_SESSION['user_id'] = $user_id;
 
@@ -129,7 +138,8 @@ if ($action === "register" || $action === "login") {
         ]);
     }
 
-    $_SESSION['username'] = $username;
+    banana_game_create_profile_if_missing($conn, (int) $user['id']);
+    $_SESSION['username'] = $user['username'];
     $_SESSION['user_id'] = $user['id'];
 
     respond([
@@ -137,7 +147,7 @@ if ($action === "register" || $action === "login") {
         "message" => "Login successful",
         "user" => [
             "id" => $user['id'],
-            "username" => $username
+            "username" => $user['username']
         ]
     ]);
 }
@@ -161,6 +171,7 @@ if ($action === "social_login") {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
+        banana_game_create_profile_if_missing($conn, (int) $user['id']);
         $_SESSION['username'] = $user['username'];
         $_SESSION['user_id'] = $user['id'];
 
@@ -182,6 +193,7 @@ if ($action === "social_login") {
 
     if ($insert->execute()) {
         $user_id = $insert->insert_id;
+        banana_game_create_profile_if_missing($conn, $user_id);
         $_SESSION['username'] = $username;
         $_SESSION['user_id'] = $user_id;
 
