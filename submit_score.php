@@ -1,8 +1,8 @@
 <?php
-session_start();
 header("Content-Type: application/json");
 
 require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/session_control.php";
 
 try {
     $conn = banana_game_db();
@@ -14,6 +14,7 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
+    banana_game_session_start();
     $period = $_GET["period"] ?? "all_time";
     $whereSql = "";
 
@@ -58,7 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     ]);
 }
 
-$userId = (int) ($_POST["user_id"] ?? 0);
+banana_game_require_auth_json();
+
+$userId = banana_game_current_user_id();
 $score = (int) ($_POST["score"] ?? 0);
 $mode = trim((string) ($_POST["mode"] ?? "campaign"));
 $highestLevel = (int) ($_POST["highest_level"] ?? 1);

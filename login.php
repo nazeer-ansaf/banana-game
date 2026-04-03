@@ -1,8 +1,8 @@
 <?php
 header("Content-Type: application/json");
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-session_start();
+require_once __DIR__ . "/session_control.php";
+
+banana_game_session_start();
 
 require_once __DIR__ . "/db.php";
 
@@ -16,19 +16,13 @@ try {
 }
 
 if (!isset($_POST['action'])) {
-    echo json_encode([
+    banana_game_respond([
         "status" => "error",
         "message" => "Action is required"
     ]);
-    exit();
 }
 
 $action = $_POST['action'];
-
-function respond($payload) {
-    echo json_encode($payload);
-    exit();
-}
 
 function sanitizeUsername($value) {
     $clean = preg_replace('/[^a-zA-Z0-9_]/', '_', trim($value));
@@ -62,7 +56,7 @@ function generateUniqueUsername($conn, $baseUsername) {
 
 if ($action === "register" || $action === "login") {
     if (!isset($_POST['username'], $_POST['password'])) {
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "Username and password required"
         ]);
@@ -72,7 +66,7 @@ if ($action === "register" || $action === "login") {
     $password = trim($_POST['password']);
 
     if ($username === "" || $password === "") {
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "Username and password cannot be empty"
         ]);
@@ -85,7 +79,7 @@ if ($action === "register" || $action === "login") {
 
     if ($action === "register") {
         if ($result->num_rows > 0) {
-            respond([
+            banana_game_respond([
                 "status" => "error",
                 "message" => "User already exists"
             ]);
@@ -104,10 +98,9 @@ if ($action === "register" || $action === "login") {
         if ($insert->execute()) {
             $user_id = $insert->insert_id;
             banana_game_create_profile_if_missing($conn, $user_id);
-            $_SESSION['username'] = $username;
-            $_SESSION['user_id'] = $user_id;
+            banana_game_login_user($user_id, $username);
 
-            respond([
+            banana_game_respond([
                 "status" => "success",
                 "message" => "Registered successfully",
                 "user" => [
@@ -117,14 +110,14 @@ if ($action === "register" || $action === "login") {
             ]);
         }
 
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "Registration failed"
         ]);
     }
 
     if ($result->num_rows === 0) {
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "User not found"
         ]);
@@ -132,17 +125,16 @@ if ($action === "register" || $action === "login") {
 
     $user = $result->fetch_assoc();
     if (!password_verify($password, $user['password'])) {
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "Wrong password"
         ]);
     }
 
     banana_game_create_profile_if_missing($conn, (int) $user['id']);
-    $_SESSION['username'] = $user['username'];
-    $_SESSION['user_id'] = $user['id'];
+    banana_game_login_user((int) $user['id'], (string) $user['username']);
 
-    respond([
+    banana_game_respond([
         "status" => "success",
         "message" => "Login successful",
         "user" => [
@@ -158,7 +150,7 @@ if ($action === "social_login") {
     $email = trim($_POST['email'] ?? '');
 
     if ($social_id === "" || $username === "") {
-        respond([
+        banana_game_respond([
             "status" => "error",
             "message" => "Social ID and username are required"
         ]);
@@ -172,10 +164,9 @@ if ($action === "social_login") {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         banana_game_create_profile_if_missing($conn, (int) $user['id']);
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['user_id'] = $user['id'];
+        banana_game_login_user((int) $user['id'], (string) $user['username']);
 
-        respond([
+        banana_game_respond([
             "status" => "success",
             "message" => "Login successful",
             "user" => [
@@ -194,10 +185,9 @@ if ($action === "social_login") {
     if ($insert->execute()) {
         $user_id = $insert->insert_id;
         banana_game_create_profile_if_missing($conn, $user_id);
-        $_SESSION['username'] = $username;
-        $_SESSION['user_id'] = $user_id;
+        banana_game_login_user($user_id, $username);
 
-        respond([
+        banana_game_respond([
             "status" => "success",
             "message" => "Registered via social login",
             "user" => [
@@ -207,13 +197,13 @@ if ($action === "social_login") {
         ]);
     }
 
-    respond([
+    banana_game_respond([
         "status" => "error",
         "message" => "Social registration failed: " . $conn->error
     ]);
 }
 
-respond([
+banana_game_respond([
     "status" => "error",
     "message" => "Invalid action"
 ]);

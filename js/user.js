@@ -121,13 +121,6 @@ export function logoutUser() {
     window.location.href = "logout.php";
 }
 
-// ================================
-// CREATE NEW USER (Optional Wrapper)
-// ================================
-export async function createUser(username, password, rememberMe = false) {
-    return await authUser(username, password, "register", rememberMe);
-}
-
 export async function registerUser({
     username,
     email = "",

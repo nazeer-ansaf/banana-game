@@ -1,10 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . "/session_control.php";
 
-if (!isset($_SESSION["user_id"], $_SESSION["username"])) {
-    header("Location: index.html");
-    exit();
-}
+banana_game_require_auth_page();
 
 $userId = (int) $_SESSION["user_id"];
 ?>

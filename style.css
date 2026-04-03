@@ -633,6 +633,8 @@ button:disabled {
 }
 
 #login-section input[type="text"],
+#login-section input[type="email"],
+#login-section input[type="tel"],
 #login-section input[type="password"] {
     padding: 11px 18px;
     margin: 4px 0;
@@ -737,10 +739,6 @@ button:disabled {
 .welcome-badge span {
     font-size: 2.3rem;
     filter: drop-shadow(0 3px 0 rgba(145, 91, 33, 0.38));
-}
-
-#game-section.active-run .welcome-banner {
-    display: none;
 }
 
 @keyframes welcomeBadgeFloat {
@@ -1524,22 +1522,6 @@ button:disabled {
 }
 
 
-
-#game-content {
-    width: 100%;
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 10px 0 4px;
-}
-
-#game-section.active-run #game-content {
-    padding: 0;
-}
-
-#game-section.active-run {
-    padding: 10px 12px;
-    margin-bottom: 0;
-}
 
 .puzzle-source {
     font-size: 0.9rem;
@@ -3075,6 +3057,8 @@ button:disabled {
     }
 
     #login-section input[type="text"],
+    #login-section input[type="email"],
+    #login-section input[type="tel"],
     #login-section input[type="password"] {
         padding: 10px 16px;
         margin: 3px 0;
@@ -3122,6 +3106,88 @@ button:disabled {
     .field-feedback {
         min-height: 12px;
         font-size: 0.74rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
+    #app {
+        min-height: calc(100vh - 24px);
+        padding: 14px 12px;
+        border-radius: 26px;
+    }
+
+    #app:hover {
+        transform: none;
+    }
+
+    #login-section {
+        max-width: 100%;
+        padding: 14px 14px 16px;
+        border-radius: 28px;
+        border-width: 3px;
+        box-shadow: 0 10px 0 #ca8b2c, 0 16px 24px rgba(0,0,0,0.1);
+    }
+
+    #login-section::before,
+    #login-section::after {
+        font-size: 5.25rem;
+    }
+
+    #login-section .game-title {
+        font-size: 1.45rem;
+        margin-bottom: 12px;
+    }
+
+    #login-section input[type="text"],
+    #login-section input[type="email"],
+    #login-section input[type="tel"],
+    #login-section input[type="password"] {
+        padding: 10px 14px;
+        font-size: 0.96rem;
+    }
+
+    #login-section button {
+        font-size: 1rem;
+        padding: 12px 14px;
+    }
+
+    .remember {
+        flex-wrap: wrap;
+        font-size: 0.94rem;
+    }
+
+    .login-links {
+        font-size: 0.92rem;
+        line-height: 1.45;
+        word-break: break-word;
+    }
+
+    .social-login {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .social-login-title {
+        font-size: 0.9rem;
+        gap: 6px;
+    }
+
+    .social-login-option {
+        padding: 8px 2px 2px;
+    }
+
+    .g_id_signin {
+        overflow: hidden;
+    }
+
+    .password-strength,
+    .field-feedback,
+    .register-tip {
+        font-size: 0.9rem;
     }
 }
 
@@ -3260,7 +3326,7 @@ button:disabled {
         border: 1px solid #ccc;
     }
     
-    button, #answer-container, .achievement-popup,
+    button, #answer-container,
     .modal-overlay, .stop-actions, #login-section {
         display: none;
     }
@@ -3657,13 +3723,6 @@ hr.separator {
         min-height: 30px;
     }
 }
-.player-hub {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 22px;
-}
-
 .campaign-screen {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) auto;
@@ -3840,43 +3899,6 @@ hr.separator {
     font-size: 1.08rem;
 }
 
-.mode-card-container {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.mode-card {
-    margin: 0;
-    min-height: 130px;
-    text-transform: none;
-    letter-spacing: 0;
-    text-align: left;
-    padding: 18px;
-    border-radius: 24px;
-    background: linear-gradient(180deg, #f8b26a 0%, #df835d 100%);
-}
-
-.mode-card.active {
-    box-shadow: 0 10px 0 #7b421d, 0 18px 34px rgba(198, 94, 29, 0.28);
-    outline: 3px solid rgba(255, 239, 197, 0.75);
-}
-
-.mode-card strong,
-.mode-card span,
-.mode-card small {
-    display: block;
-}
-
-.mode-card span {
-    margin: 8px 0;
-    font-size: 0.95rem;
-}
-
-.mode-card small {
-    opacity: 0.85;
-}
-
 .mission-list,
 .recent-runs-list {
     list-style: none;
@@ -3972,10 +3994,6 @@ hr.separator {
     margin-top: 6px;
 }
 
-#game-section.active-run .player-hub {
-    display: none;
-}
-
 @media (max-width: 900px) {
     .profile-panel,
     .mode-panel,
@@ -3987,8 +4005,7 @@ hr.separator {
 }
 
 @media (max-width: 640px) {
-    .profile-stats-grid,
-    .mode-card-container {
+    .profile-stats-grid {
         grid-template-columns: 1fr;
     }
 
@@ -4144,8 +4161,7 @@ hr.separator {
 
 .dashboard-grid > .mission-panel,
 .dashboard-grid > .achievement-panel,
-.dashboard-grid > .recent-runs-panel,
-.dashboard-grid > .leaderboard-dashboard-panel {
+.dashboard-grid > .recent-runs-panel {
     grid-column: span 3;
 }
 
@@ -4677,59 +4693,6 @@ body.result-open {
     font-size: 0.8rem;
 }
 
-.compact-leaderboard-list {
-    list-style: none;
-    display: grid;
-    gap: 10px;
-}
-
-.compact-leaderboard-list .leaderboard-entry {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px !important;
-    border-radius: 22px !important;
-    min-height: 96px;
-}
-
-.compact-leaderboard-list .leaderboard-entry-main {
-    min-width: 0;
-}
-
-.compact-leaderboard-list .leaderboard-username {
-    padding-left: 0;
-    font-size: 0.95rem;
-    line-height: 1.2;
-}
-
-.compact-leaderboard-list .leaderboard-score {
-    min-width: 84px;
-    text-align: center;
-    padding: 10px 16px;
-    font-size: 1rem;
-}
-
-.compact-leaderboard-list .leaderboard-meta {
-    margin-top: 8px;
-    font-size: 0.8rem;
-    line-height: 1.35;
-}
-
-.compact-panel-title {
-    color: #d7b17b;
-    font-size: 1.05rem;
-}
-
-.compact-leaderboard-panel .dashboard-action-link {
-    min-height: 52px;
-    font-size: 0.95rem;
-}
-
-.compact-leaderboard-panel .dashboard-action-link.secondary {
-    color: #fff4df;
-}
-
 .mission-list,
 .achievement-list,
 .recent-runs-list {
@@ -4897,15 +4860,6 @@ body.result-open {
 }
 
 @media (max-width: 640px) {
-    .compact-leaderboard-list .leaderboard-entry {
-        grid-template-columns: 1fr;
-        align-items: start;
-    }
-
-    .compact-leaderboard-list .leaderboard-score {
-        width: 100%;
-    }
-
     .auth-inline,
     .auth-actions {
         grid-template-columns: 1fr;
@@ -4914,13 +4868,28 @@ body.result-open {
 }
 
 @media (max-width: 1100px) {
+    .dashboard-grid {
+        gap: 16px;
+    }
+
     .dashboard-grid > .profile-panel,
     .dashboard-grid > .dashboard-mode-panel,
     .dashboard-grid > .mission-panel,
     .dashboard-grid > .achievement-panel,
-    .dashboard-grid > .recent-runs-panel,
-    .dashboard-grid > .leaderboard-dashboard-panel {
+    .dashboard-grid > .recent-runs-panel {
         grid-column: span 12;
+    }
+
+    .campaign-page-actions {
+        min-width: 0;
+    }
+
+    #level-buttons-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .campaign-page-actions .dashboard-action-link {
+        min-width: 0;
     }
 }
 
@@ -4930,8 +4899,27 @@ body.result-open {
         grid-template-columns: 1fr;
     }
 
+    .dashboard-shell,
+    .campaign-page-shell,
+    .play-shell,
+    .result-shell {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .dashboard-card,
+    .profile-panel,
+    .mode-panel,
+    .mission-panel,
+    .achievement-panel,
+    .recent-runs-panel,
+    .campaign-page-board {
+        border-radius: 24px;
+    }
+
     .play-layout {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .play-header {
@@ -4941,11 +4929,13 @@ body.result-open {
 
     .play-header-actions {
         min-width: 0;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .play-sidebar {
         position: static;
         grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
     }
 
     .run-progress-panel {
@@ -4978,11 +4968,56 @@ body.result-open {
     .campaign-screen-stats {
         justify-content: flex-start;
     }
+
+    #level-buttons-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .result-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .leaderboard-filters {
+        flex-wrap: wrap;
+    }
+
+    .leaderboard-filter {
+        flex: 1 1 180px;
+    }
 }
 
 @media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+
+    #app {
+        min-height: calc(100vh - 24px);
+        padding: 16px 12px;
+        border-radius: 24px;
+    }
+
+    #app:hover {
+        transform: none;
+    }
+
+    .section {
+        padding: 16px 14px;
+        border-radius: 22px;
+    }
+
+    .dashboard-shell,
+    .campaign-page-shell,
+    .play-shell,
+    .result-shell {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
     .play-main #answer-container {
         grid-template-columns: 1fr;
+        padding: 8px;
+        border-radius: 20px;
     }
 
     .play-meta-strip {
@@ -4991,6 +5026,30 @@ body.result-open {
 
     .play-sidebar {
         grid-template-columns: 1fr;
+    }
+
+    .play-header-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .play-sidebar .game-header,
+    .play-sidebar .score-badge,
+    .play-sidebar #timer-container,
+    .play-sidebar .stop-run-btn {
+        min-height: 72px;
+        border-radius: 18px;
+    }
+
+    .play-sidebar #level-number,
+    .play-sidebar #score,
+    .play-sidebar #wrong-count,
+    .play-sidebar #timer {
+        font-size: 1.45rem !important;
+    }
+
+    .puzzle-stage {
+        min-height: min(40vh, 340px);
+        padding: 12px;
     }
 
     .play-shell .stop-panel {
@@ -5008,5 +5067,72 @@ body.result-open {
 
     .result-actions {
         grid-template-columns: 1fr;
+    }
+
+    .campaign-page-board {
+        padding: 18px 16px;
+        border-radius: 24px;
+    }
+
+    .campaign-page-title,
+    .play-mode-title,
+    #play-mode-title {
+        font-size: 1.5rem;
+    }
+
+    .campaign-hero {
+        grid-template-columns: 1fr;
+        text-align: left;
+    }
+
+    .campaign-orb {
+        width: 78px;
+        height: 78px;
+    }
+
+    .campaign-orb span {
+        font-size: 1.6rem;
+    }
+
+    .campaign-rules {
+        grid-template-columns: 1fr;
+    }
+
+    .campaign-screen {
+        padding: 12px 14px;
+    }
+
+    #level-buttons-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .level-card {
+        min-height: 120px;
+    }
+
+    .dashboard-hero {
+        padding: 16px;
+    }
+
+    .dashboard-hero-pills {
+        gap: 8px;
+    }
+
+    .dashboard-mode-card {
+        padding: 14px;
+    }
+
+    .panel-heading {
+        gap: 6px;
+    }
+
+    .leaderboard-filters {
+        flex-direction: column;
+    }
+
+    .leaderboard-filter {
+        width: 100%;
+        flex: 1 1 auto;
     }
 }

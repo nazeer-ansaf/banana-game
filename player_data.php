@@ -1,8 +1,10 @@
 <?php
-session_start();
 header("Content-Type: application/json");
 
 require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/session_control.php";
+
+banana_game_require_auth_json();
 
 try {
     $conn = banana_game_db();
@@ -20,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
     ]);
 }
 
-$userId = (int) ($_GET["user_id"] ?? 0);
+$userId = banana_game_current_user_id();
 
 if ($userId <= 0) {
     banana_game_respond([
