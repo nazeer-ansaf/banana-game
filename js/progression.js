@@ -113,6 +113,7 @@ function createDefaultState(user) {
     return {
         userId: user?.id ?? null,
         username: user?.username ?? "Player",
+        role: user?.role ?? "player",
         xp: 0,
         coins: 0,
         totalRuns: 0,
@@ -125,7 +126,12 @@ function createDefaultState(user) {
         lastMode: "campaign",
         achievements: {},
         recentRuns: [],
-        daily: createEmptyDailyState()
+        daily: createEmptyDailyState(),
+        settings: {
+            soundEnabled: true,
+            musicEnabled: true,
+            effectsEnabled: true
+        }
     };
 }
 
@@ -189,12 +195,18 @@ function mergeState(localState, remoteData, user) {
     merged.totalWrong = Math.max(localState.totalWrong || 0, remoteProfile.total_wrong || 0);
     merged.longestStreak = Math.max(localState.longestStreak || 0, remoteProfile.longest_streak || 0);
     merged.lastMode = remoteProfile.last_mode || localState.lastMode || "campaign";
+    merged.role = remoteData?.account?.role || localState.role || user?.role || "player";
     merged.achievements = {
         ...(localState.achievements || {}),
         ...remoteAchievementMap
     };
     merged.recentRuns = Array.isArray(remoteData?.recent_runs) ? remoteData.recent_runs : localState.recentRuns || [];
     merged.daily = localState.daily || createEmptyDailyState();
+    merged.settings = {
+        soundEnabled: remoteData?.settings?.sound_enabled ?? localState.settings?.soundEnabled ?? true,
+        musicEnabled: remoteData?.settings?.music_enabled ?? localState.settings?.musicEnabled ?? true,
+        effectsEnabled: remoteData?.settings?.effects_enabled ?? localState.settings?.effectsEnabled ?? true
+    };
 
     return ensureDailyState(merged);
 }
@@ -273,7 +285,8 @@ export async function loadPlayerProgress(user) {
             ...createDefaultState(user),
             ...localState,
             userId: user.id,
-            username: user.username
+            username: user.username,
+            role: user.role || "player"
         });
         persistState(safeState);
         return safeState;

@@ -64,6 +64,7 @@ if ($action === "register" || $action === "login") {
 
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
+    $rememberMe = !empty($_POST["remember_me"]);
 
     if ($username === "" || $password === "") {
         banana_game_respond([
@@ -87,25 +88,28 @@ if ($action === "register" || $action === "login") {
 
         $email = trim($_POST['email'] ?? '');
         $phoneNumber = trim($_POST['phone_number'] ?? '');
+        $role = banana_game_get_new_user_role($conn);
         $email = $email !== "" ? $email : null;
         $phoneNumber = $phoneNumber !== "" ? $phoneNumber : null;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $insert = $conn->prepare(
-            "INSERT INTO users (username, password, email, phone_number) VALUES (?, ?, ?, ?)"
+            "INSERT INTO users (username, password, email, phone_number, role) VALUES (?, ?, ?, ?, ?)"
         );
-        $insert->bind_param("ssss", $username, $hashedPassword, $email, $phoneNumber);
+        $insert->bind_param("sssss", $username, $hashedPassword, $email, $phoneNumber, $role);
 
         if ($insert->execute()) {
             $user_id = $insert->insert_id;
             banana_game_create_profile_if_missing($conn, $user_id);
-            banana_game_login_user($user_id, $username);
+            banana_game_create_settings_if_missing($conn, $user_id);
+            banana_game_login_user($user_id, $username, $role, $rememberMe);
 
             banana_game_respond([
                 "status" => "success",
                 "message" => "Registered successfully",
                 "user" => [
                     "id" => $user_id,
-                    "username" => $username
+                    "username" => $username,
+                    "role" => $role
                 ]
             ]);
         }
@@ -132,14 +136,16 @@ if ($action === "register" || $action === "login") {
     }
 
     banana_game_create_profile_if_missing($conn, (int) $user['id']);
-    banana_game_login_user((int) $user['id'], (string) $user['username']);
+    banana_game_create_settings_if_missing($conn, (int) $user["id"]);
+    banana_game_login_user((int) $user['id'], (string) $user['username'], (string) ($user["role"] ?? "player"), $rememberMe);
 
     banana_game_respond([
         "status" => "success",
         "message" => "Login successful",
         "user" => [
             "id" => $user['id'],
-            "username" => $user['username']
+            "username" => $user['username'],
+            "role" => $user["role"] ?? "player"
         ]
     ]);
 }
@@ -148,6 +154,7 @@ if ($action === "social_login") {
     $social_id = trim($_POST['social_id'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $rememberMe = !empty($_POST["remember_me"]);
 
     if ($social_id === "" || $username === "") {
         banana_game_respond([
@@ -164,35 +171,40 @@ if ($action === "social_login") {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         banana_game_create_profile_if_missing($conn, (int) $user['id']);
-        banana_game_login_user((int) $user['id'], (string) $user['username']);
+        banana_game_create_settings_if_missing($conn, (int) $user["id"]);
+        banana_game_login_user((int) $user['id'], (string) $user['username'], (string) ($user["role"] ?? "player"), $rememberMe);
 
         banana_game_respond([
             "status" => "success",
             "message" => "Login successful",
             "user" => [
                 "id" => $user['id'],
-                "username" => $user['username']
+                "username" => $user['username'],
+                "role" => $user["role"] ?? "player"
             ]
         ]);
     }
 
     $username = generateUniqueUsername($conn, $username);
     $email = $email !== "" ? $email : null;
+    $role = banana_game_get_new_user_role($conn);
 
-    $insert = $conn->prepare("INSERT INTO users (username, social_id, email) VALUES (?, ?, ?)");
-    $insert->bind_param("sss", $username, $social_id, $email);
+    $insert = $conn->prepare("INSERT INTO users (username, social_id, email, role) VALUES (?, ?, ?, ?)");
+    $insert->bind_param("ssss", $username, $social_id, $email, $role);
 
     if ($insert->execute()) {
         $user_id = $insert->insert_id;
         banana_game_create_profile_if_missing($conn, $user_id);
-        banana_game_login_user($user_id, $username);
+        banana_game_create_settings_if_missing($conn, $user_id);
+        banana_game_login_user($user_id, $username, $role, $rememberMe);
 
         banana_game_respond([
             "status" => "success",
             "message" => "Registered via social login",
             "user" => [
                 "id" => $user_id,
-                "username" => $username
+                "username" => $username,
+                "role" => $role
             ]
         ]);
     }

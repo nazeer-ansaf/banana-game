@@ -54,11 +54,40 @@ function renderLeaderboard(entries, period) {
         item.className = "leaderboard-entry";
         item.innerHTML = `
             <div class="leaderboard-entry-main">
-                <span class="leaderboard-username">${index + 1}. ${entry.username}</span>
-                <small class="leaderboard-meta">Best level ${entry.highest_level} | ${entry.wins} wins</small>
+                <div class="user-avatar leaderboard-avatar${entry.profile_photo ? " has-image" : ""}">
+                    ${entry.profile_photo
+                        ? `<img src="${escapeAttribute(entry.profile_photo)}" alt="${escapeAttribute(entry.username)} profile photo">`
+                        : `<span>${escapeHtml(getInitials(entry.username))}</span>`}
+                </div>
+                <div class="leaderboard-copy">
+                    <span class="leaderboard-username">${index + 1}. ${escapeHtml(entry.username)}</span>
+                    <small class="leaderboard-meta">Best level ${entry.highest_level} | ${entry.wins} wins</small>
+                </div>
             </div>
             <span class="leaderboard-score">${entry.score}</span>
         `;
         list.appendChild(item);
     });
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+}
+
+function escapeAttribute(value) {
+    return escapeHtml(value);
+}
+
+function getInitials(name) {
+    return String(name || "Player")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part.charAt(0).toUpperCase())
+        .join("") || "P";
 }

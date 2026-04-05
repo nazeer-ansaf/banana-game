@@ -1,4 +1,4 @@
-import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js?v=20260403d";
+import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js?v=20260405a";
 import { formatModeLabel } from "./progression.js?v=20260403d";
 import { logoutUser } from "./user.js?v=20260403d";
 

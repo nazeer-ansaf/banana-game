@@ -63,6 +63,7 @@ export async function authUser(username, password, action = "login", rememberMe 
                 username,
                 password,
                 action,
+                remember_me: rememberMe ? "1" : "0",
                 ...extraFields
             })
         });
@@ -166,7 +167,8 @@ export async function socialAuthUser({ username, email, socialId, rememberMe = t
                 username,
                 email: email || "",
                 social_id: socialId,
-                action: "social_login"
+                action: "social_login",
+                remember_me: rememberMe ? "1" : "0"
             })
         });
 

@@ -8,7 +8,7 @@ import {
     setScoringProfile
 } from "./game.js";
 import { startTimer, stopTimer } from "./timer.js";
-import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js";
+import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js?v=20260405a";
 import {
     authUser,
     getLoggedInUser,

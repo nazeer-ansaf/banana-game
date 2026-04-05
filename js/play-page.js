@@ -23,6 +23,8 @@ let wrongAttempts = 0;
 let playerProgress = null;
 let finalizingRun = false;
 let soundEnabled = true;
+let musicEnabled = true;
+let effectsEnabled = true;
 
 const playModeTitle = document.getElementById("play-mode-title");
 const playModeKicker = document.getElementById("play-mode-kicker");
@@ -47,8 +49,8 @@ const messageDisplay = document.getElementById("message");
 logoutBtn?.addEventListener("click", logoutUser);
 soundToggleBtn?.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
-    soundToggleBtn.textContent = soundEnabled ? "Sound On" : "Sound Off";
-    soundToggleBtn.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
+    syncSoundButton();
+    persistSoundSettings();
     if (soundEnabled) {
         playToneSequence([440, 660], 0.05, "triangle");
     }
@@ -108,6 +110,10 @@ async function initializePlayPage() {
     playLevelCount.textContent = String(currentMode.levels.length);
     playRewardMultiplier.textContent = currentMode.rewardMultiplier.toFixed(2);
     playerProgress = await loadPlayerProgress(currentUser);
+    soundEnabled = Boolean(playerProgress.settings?.soundEnabled ?? true);
+    musicEnabled = Boolean(playerProgress.settings?.musicEnabled ?? true);
+    effectsEnabled = Boolean(playerProgress.settings?.effectsEnabled ?? true);
+    syncSoundButton();
 
     resetScore();
     startLevel();
@@ -252,7 +258,6 @@ async function persistRun(runSummary, progressResult) {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({
-                user_id: currentUser.id,
                 score: String(runSummary.score),
                 mode: runSummary.mode,
                 highest_level: String(runSummary.highestLevel),
@@ -282,7 +287,7 @@ function showMessage(text, tone) {
 }
 
 function playToneSequence(frequencies, duration = 0.06, type = "sine") {
-    if (!soundEnabled || !window.AudioContext && !window.webkitAudioContext) {
+    if (!soundEnabled || !effectsEnabled || !window.AudioContext && !window.webkitAudioContext) {
         return;
     }
 
@@ -305,4 +310,38 @@ function playToneSequence(frequencies, duration = 0.06, type = "sine") {
         oscillator.start(now + index * duration);
         oscillator.stop(now + index * duration + duration);
     });
+}
+
+function syncSoundButton() {
+    if (!soundToggleBtn) {
+        return;
+    }
+
+    soundToggleBtn.textContent = soundEnabled ? "Sound On" : "Sound Off";
+    soundToggleBtn.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
+}
+
+async function persistSoundSettings() {
+    if (playerProgress?.settings) {
+        playerProgress.settings.soundEnabled = soundEnabled;
+        playerProgress.settings.musicEnabled = musicEnabled;
+        playerProgress.settings.effectsEnabled = effectsEnabled;
+    }
+
+    try {
+        await fetch("profile_actions.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                action: "update_sound_settings",
+                sound_enabled: soundEnabled ? "1" : "",
+                music_enabled: musicEnabled ? "1" : "",
+                effects_enabled: effectsEnabled ? "1" : ""
+            })
+        });
+    } catch (error) {
+        console.warn("Unable to save sound settings", error);
+    }
 }

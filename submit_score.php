@@ -25,13 +25,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $query = "
         SELECT
             u.username,
+            u.profile_photo,
             MAX(s.score) AS score,
             MAX(s.highest_level) AS highest_level,
             SUM(CASE WHEN s.result = 'won' THEN 1 ELSE 0 END) AS wins
         FROM scores s
         JOIN users u ON s.user_id = u.id
         {$whereSql}
-        GROUP BY s.user_id, u.username
+        GROUP BY s.user_id, u.username, u.profile_photo
         ORDER BY score DESC, highest_level DESC, wins DESC, u.username ASC
         LIMIT 10
     ";
@@ -42,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     while ($row = $result->fetch_assoc()) {
         $leaderboard[] = [
             "username" => $row["username"],
+            "profile_photo" => $row["profile_photo"] ?? "",
             "score" => (int) $row["score"],
             "highest_level" => (int) $row["highest_level"],
             "wins" => (int) $row["wins"]
