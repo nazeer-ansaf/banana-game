@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_id'])) {
     <title>🍌 Choose Your Level</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* --- Body & Container --- */
+        /* --- Body & Container -- */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(to bottom, #fffefc, #f3f7ff);

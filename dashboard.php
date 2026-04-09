@@ -30,7 +30,7 @@ $role = (string) ($_SESSION["role"] ?? "player");
                 </div>
             </div>
             <div class="dashboard-quick-actions">
-                <a href="profile.php" class="dashboard-action-link secondary">Profile</a>
+                <a href="profile.php?view=top" class="dashboard-action-link secondary">Profile</a>
                 <?php if ($role === "admin"): ?>
                     <a href="admin.php" class="dashboard-action-link secondary">Admin Panel</a>
                 <?php endif; ?>

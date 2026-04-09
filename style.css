@@ -5255,6 +5255,10 @@ body.result-open {
     grid-column: span 8;
 }
 
+.profile-grid > .profile-overview-card {
+    grid-column: span 12;
+}
+
 .profile-settings-layout {
     width: 100%;
     align-items: start;
@@ -5297,6 +5301,20 @@ body.result-open {
 .profile-summary-card,
 .settings-card {
     padding: 26px 28px 24px;
+}
+
+.profile-overview-card {
+    padding: 20px 24px;
+    display: grid;
+    gap: 16px;
+}
+
+.profile-overview-progress {
+    display: grid;
+}
+
+.profile-stats-grid--overview {
+    margin-top: 0;
 }
 
 .profile-photo-section {
@@ -5495,21 +5513,41 @@ body.result-open {
 }
 
 .profile-page-hero {
-    margin-bottom: 8px;
+    margin-bottom: 2px;
+    padding: 14px 18px;
+    min-height: 0;
+}
+
+.profile-page-hero .welcome-copy h2 {
+    font-size: 1.85rem;
+}
+
+.profile-page-hero .welcome-subtext {
+    font-size: 0.93rem;
+}
+
+.page-hero-actions .dashboard-action-link {
+    min-height: 54px;
+}
+
+.profile-grid {
+    gap: 14px;
 }
 
 .profile-showcase-card {
     display: grid;
-    gap: 18px;
+    gap: 12px;
     align-content: start;
+    position: sticky;
+    top: 18px;
 }
 
 .profile-identity-block {
     display: grid;
     justify-items: center;
-    gap: 14px;
+    gap: 10px;
     text-align: center;
-    padding-top: 8px;
+    padding-top: 4px;
 }
 
 .profile-showcase-avatar-wrap {
@@ -5518,8 +5556,8 @@ body.result-open {
 }
 
 .profile-showcase-avatar {
-    width: 156px;
-    height: 156px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     border-width: 4px;
     animation: none;
@@ -5533,16 +5571,16 @@ body.result-open {
     position: absolute;
     right: 8px;
     bottom: 8px;
-    min-width: 56px;
-    height: 56px;
-    padding: 0 12px;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
     background: linear-gradient(145deg, #f0b85c, #d37c46);
     color: #fff8ee;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 800;
     border: 4px solid rgba(255,255,255,0.96);
     box-shadow: 0 12px 26px rgba(180, 114, 43, 0.24);
@@ -5552,14 +5590,14 @@ body.result-open {
 .profile-identity-copy h3 {
     margin: 0;
     color: #5d3714;
-    font-size: 1.95rem;
+    font-size: 1.4rem;
     line-height: 1.05;
 }
 
 .profile-identity-copy p {
     margin: 6px 0 0;
     color: #8a6039;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
@@ -5567,8 +5605,8 @@ body.result-open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: 12px;
-    padding: 8px 16px;
+    margin-top: 8px;
+    padding: 7px 16px;
     border-radius: 999px;
     background: linear-gradient(145deg, #f0b85c, #d37c46);
     color: #fff8ee;
@@ -5579,33 +5617,10 @@ body.result-open {
 }
 
 .profile-progress-card {
-    padding: 18px;
-    border-radius: 24px;
+    padding: 12px 14px;
+    border-radius: 18px;
     background: rgba(240, 184, 92, 0.08);
     border: 1px solid rgba(214, 149, 92, 0.18);
-}
-
-.profile-quick-nav {
-    display: grid;
-    gap: 10px;
-}
-
-.profile-nav-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 54px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.72);
-    color: #6e4b25;
-    font-weight: 800;
-    border: 1px solid rgba(214, 149, 92, 0.16);
-}
-
-.profile-nav-pill.active {
-    background: linear-gradient(145deg, #f0b85c, #d37c46);
-    color: #fff8ee;
-    box-shadow: 0 12px 24px rgba(180, 114, 43, 0.18);
 }
 
 .sample-inspired-card {
@@ -5613,8 +5628,8 @@ body.result-open {
 }
 
 .sample-card-header {
-    margin: -26px -28px 22px;
-    padding: 18px 24px;
+    margin: -26px -28px 12px;
+    padding: 12px 18px;
     border-radius: 28px 28px 0 0;
     background: linear-gradient(145deg, #8e6e46, #6c4c2c);
 }
@@ -5634,23 +5649,23 @@ body.result-open {
 
 .compact-settings-card {
     display: grid;
-    gap: 18px;
+    gap: 14px;
     align-content: start;
 }
 
 .settings-tab-bar {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 6px;
 }
 
 .settings-tab {
-    min-height: 54px;
-    border-radius: 18px;
+    min-height: 42px;
+    border-radius: 16px;
     border: 1px solid rgba(214, 149, 92, 0.18);
     background: rgba(255,255,255,0.74);
     color: #6e4b25;
-    font-size: 0.96rem;
+    font-size: 0.92rem;
     font-weight: 800;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -5668,7 +5683,7 @@ body.result-open {
 
 .settings-tab-panel {
     display: grid;
-    gap: 18px;
+    gap: 12px;
 }
 
 .settings-tab-panel[hidden] {
@@ -5681,7 +5696,7 @@ body.result-open {
 
 .profile-fields-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 26px;
+    gap: 10px 18px;
 }
 
 .profile-fields-grid label:nth-child(5) {
@@ -5693,8 +5708,8 @@ body.result-open {
 }
 
 .profile-details-card .settings-form input {
-    min-height: 56px;
-    border-radius: 16px;
+    min-height: 46px;
+    border-radius: 14px;
     border-width: 2px;
     border-color: rgba(214, 149, 92, 0.35);
     background: rgba(255,255,255,0.9);
@@ -5702,17 +5717,38 @@ body.result-open {
 }
 
 .sound-setting-list {
-    gap: 14px;
+    gap: 10px;
 }
 
 .profile-save-inline {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin-top: 4px;
+    gap: 12px;
+    margin-top: 0;
     padding-top: 8px;
     border-top: 1px solid rgba(214, 149, 92, 0.18);
+}
+
+.profile-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.profile-stats-grid article {
+    padding: 10px 12px;
+    border-radius: 18px;
+}
+
+.profile-stats-grid strong {
+    font-size: 0.98rem;
+}
+
+.profile-photo-upload,
+.profile-photo-remove,
+.profile-save-button {
+    min-height: 44px;
 }
 
 .settings-feedback-wrap {
@@ -5720,8 +5756,278 @@ body.result-open {
     min-width: 0;
 }
 
+.profile-inline-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1px solid rgba(214, 149, 92, 0.18);
+}
+
+.profile-inline-actions input[type="file"] {
+    display: none;
+}
+
+.profile-inline-button {
+    width: 100%;
+}
+
+.profile-inline-hint {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 0.82rem;
+}
+
+.profile-save-button {
+    min-width: 220px;
+}
+
+.profile-photo-hint,
+.xp-progress-label,
+.profile-stats-grid span {
+    font-size: 0.82rem;
+}
+
+.toggle-row {
+    min-height: 44px;
+    padding: 4px 0;
+}
+
 .profile-photo-preview.has-image span {
     display: none;
+}
+
+.profile-app {
+    min-height: 100vh;
+}
+
+@media (min-width: 1101px) {
+    .profile-app .dashboard-shell {
+        display: block;
+        min-height: auto;
+        overflow: visible;
+    }
+
+    .dashboard-shell {
+        padding-top: 8px;
+        padding-bottom: 10px;
+    }
+
+    .profile-page-hero {
+        padding: 8px 12px;
+        margin-bottom: 0;
+        border-radius: 28px;
+    }
+
+    .profile-page-hero .welcome-copy h2 {
+        font-size: 1.38rem;
+    }
+
+    .profile-page-hero .welcome-subtext {
+        font-size: 0.8rem;
+    }
+
+    .page-hero-actions .dashboard-action-link {
+        min-height: 40px;
+        border-radius: 22px;
+        font-size: 0.95rem;
+    }
+
+    .profile-grid {
+        gap: 8px;
+        align-items: start;
+    }
+
+    .profile-app .profile-settings-layout {
+        height: auto;
+        min-height: 0;
+        align-items: start;
+    }
+
+    .profile-showcase-card {
+        gap: 10px;
+        padding: 14px 16px 14px;
+        position: static;
+        top: auto;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        border-radius: 28px;
+    }
+
+    .profile-overview-card {
+        padding: 12px 16px 14px;
+        gap: 10px;
+        border-radius: 24px;
+    }
+
+    .profile-identity-block {
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        justify-items: start;
+        text-align: left;
+        gap: 12px;
+    }
+
+    .profile-showcase-avatar {
+        width: 82px;
+        height: 82px;
+    }
+
+    .profile-avatar-fab {
+        right: -2px;
+        bottom: -2px;
+        min-width: 34px;
+        height: 34px;
+        font-size: 0.68rem;
+        border-width: 3px;
+    }
+
+    .profile-identity-copy h3 {
+        font-size: 1.08rem;
+    }
+
+    .profile-identity-copy p {
+        margin-top: 3px;
+        font-size: 0.78rem;
+    }
+
+    .profile-role-badge {
+        margin-top: 5px;
+        padding: 5px 12px;
+        font-size: 0.68rem;
+    }
+
+    .profile-progress-card {
+        padding: 8px 10px;
+        border-radius: 14px;
+    }
+
+    .xp-progress {
+        height: 14px;
+    }
+
+    .xp-progress-label {
+        margin-top: 6px;
+    }
+
+    .profile-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 2px;
+    }
+
+    .profile-stats-grid article {
+        padding: 7px 8px;
+        border-radius: 12px;
+    }
+
+    .profile-stats-grid strong {
+        margin-top: 3px;
+        font-size: 0.82rem;
+    }
+
+    .profile-stats-grid--overview {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .compact-settings-card {
+        gap: 12px;
+        padding: 14px 16px 14px;
+        grid-template-rows: none;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        border-radius: 28px;
+    }
+
+    .sample-card-header {
+        margin: -14px -16px 6px;
+        padding: 8px 12px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .sample-card-header strong {
+        font-size: 0.88rem;
+    }
+
+    .settings-tab {
+        min-height: 34px;
+        font-size: 0.78rem;
+        border-radius: 14px;
+    }
+
+    .settings-tab-panel {
+        gap: 6px;
+    }
+
+    .settings-panel-stack {
+        min-height: 0;
+        overflow: visible;
+        padding-right: 0;
+    }
+
+    .settings-section-heading strong {
+        font-size: 0.8rem;
+    }
+
+    .profile-fields-grid {
+        gap: 6px 10px;
+    }
+
+    .profile-details-card .settings-form label {
+        gap: 3px;
+        font-size: 0.78rem;
+    }
+
+    .profile-details-card .settings-form input {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: 0.84rem;
+        border-radius: 12px;
+    }
+
+    .profile-inline-actions {
+        gap: 6px 8px;
+        padding-top: 0;
+    }
+
+    .profile-photo-upload,
+    .profile-photo-remove,
+    .profile-save-button {
+        min-height: 34px;
+        border-radius: 18px;
+        font-size: 0.82rem;
+    }
+
+    .profile-save-inline {
+        gap: 6px;
+        padding-top: 2px;
+    }
+
+    .settings-feedback {
+        min-height: 18px;
+        margin-top: 0;
+        font-size: 0.74rem;
+    }
+
+    .sound-setting-list {
+        gap: 4px;
+    }
+
+    .toggle-row {
+        min-height: 34px;
+        padding: 1px 0;
+    }
+
+    .profile-photo-hint,
+    .xp-progress-label,
+    .profile-stats-grid span,
+    .panel-kicker {
+        font-size: 0.74rem;
+    }
 }
 
 @media (max-width: 640px) {
@@ -6031,9 +6337,15 @@ body.result-open {
 @media (max-width: 1100px) {
     .profile-grid > .profile-summary-card,
     .profile-grid > .profile-details-card,
+    .profile-grid > .profile-overview-card,
     .admin-grid > .admin-summary-card,
     .admin-grid > .admin-users-card {
         grid-column: span 12;
+    }
+
+    .profile-showcase-card {
+        position: static;
+        top: auto;
     }
 }
 
@@ -6047,6 +6359,12 @@ body.result-open {
     .page-hero-actions .dashboard-action-link {
         min-width: 0;
         flex: 1 1 180px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-stats-grid--overview {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -6069,4 +6387,372 @@ body.result-open {
     .admin-role-form {
         min-width: 0;
     }
+}
+
+.profile-screen-body {
+    align-items: flex-start;
+    min-height: auto;
+}
+
+.sketch-profile-app {
+    max-width: 1180px;
+    justify-content: flex-start;
+}
+
+.profile-screen-body,
+.profile-screen-body #app,
+.profile-screen-body .dashboard-shell,
+.profile-screen-body .profile-settings-layout {
+    min-height: 0 !important;
+    height: auto !important;
+}
+
+.sketch-profile-hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-bottom: 14px;
+    padding: 18px 22px;
+    border-radius: 26px;
+    background:
+        linear-gradient(135deg, rgba(100, 63, 28, 0.96), rgba(54, 36, 18, 0.98)),
+        linear-gradient(135deg, rgba(255, 211, 132, 0.16), transparent);
+}
+
+.sketch-profile-hero-copy h2 {
+    margin-bottom: 6px;
+    border-bottom: none;
+    padding-bottom: 0;
+    text-align: left;
+}
+
+.sketch-profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.sketch-profile-layout {
+    margin-top: 0;
+    gap: 18px;
+    align-items: start;
+}
+
+.sketch-profile-layout > .profile-summary-card {
+    grid-column: span 4;
+}
+
+.sketch-profile-layout > .profile-details-card {
+    grid-column: span 8;
+}
+
+.sketch-profile-card {
+    min-height: 0;
+    padding: 24px;
+    border-radius: 28px;
+}
+
+.sketch-profile-card--summary {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.sketch-profile-card--editor {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.sketch-card-ribbon {
+    display: inline-flex;
+    width: fit-content;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 235, 195, 0.95);
+    color: #7a4c22;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(214, 149, 92, 0.22);
+}
+
+.sketch-profile-identity {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 14px;
+    text-align: center;
+}
+
+.sketch-avatar-wrap {
+    justify-self: center;
+}
+
+.sketch-avatar-wrap #profile-photo-input {
+    display: none;
+}
+
+.sketch-profile-avatar {
+    width: 124px;
+    height: 124px;
+    box-shadow: 0 18px 30px rgba(180, 114, 43, 0.2);
+}
+
+.sketch-profile-copy {
+    width: 100%;
+    text-align: center;
+}
+
+.sketch-profile-copy h3 {
+    font-size: 1.55rem;
+}
+
+.sketch-inline-actions {
+    padding-top: 14px;
+}
+
+.sketch-inline-actions .profile-inline-button,
+.sketch-inline-actions .profile-photo-upload,
+.sketch-inline-actions .profile-photo-remove {
+    min-height: 48px;
+}
+
+.sketch-progress-card {
+    border-radius: 22px;
+    padding: 16px;
+}
+
+.sketch-stats-grid {
+    margin-top: 0;
+}
+
+.sketch-stats-grid article {
+    background: rgba(255, 251, 242, 0.88);
+    border: 1px solid rgba(214, 149, 92, 0.16);
+}
+
+.sketch-editor-header {
+    margin: -24px -24px 4px;
+    padding: 16px 20px;
+    border-radius: 28px 28px 0 0;
+}
+
+.sketch-profile-card--editor .settings-tab-bar {
+    background: rgba(255, 247, 231, 0.8);
+    padding: 6px;
+    border-radius: 20px;
+    border: 1px solid rgba(214, 149, 92, 0.18);
+}
+
+.sketch-profile-card--editor .settings-tab {
+    border-radius: 14px;
+}
+
+.sketch-profile-card--editor .settings-panel-stack {
+    padding: 2px;
+}
+
+.sketch-profile-card--editor .settings-tab-panel {
+    padding: 6px 2px 2px;
+}
+
+.sketch-profile-card--editor .settings-form {
+    gap: 14px;
+}
+
+.sketch-profile-card--editor .profile-fields-grid {
+    gap: 14px 18px;
+}
+
+.sketch-profile-card--editor .sound-setting-list,
+.sketch-profile-card--editor .settings-form label {
+    gap: 8px;
+}
+
+.sketch-profile-card--editor .toggle-row {
+    min-height: 54px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: rgba(255, 251, 242, 0.88);
+    border: 1px solid rgba(214, 149, 92, 0.18);
+}
+
+.sketch-profile-card--editor .profile-save-inline {
+    margin-top: 4px;
+    padding-top: 14px;
+}
+
+@media (max-width: 1100px) {
+    .sketch-profile-layout > .profile-summary-card,
+    .sketch-profile-layout > .profile-details-card {
+        grid-column: span 12;
+    }
+
+    .sketch-profile-card {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .sketch-profile-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .sketch-profile-actions {
+        justify-content: stretch;
+    }
+
+    .sketch-profile-actions .dashboard-action-link {
+        width: 100%;
+    }
+
+    .sketch-profile-card {
+        padding: 20px 16px;
+    }
+
+    .sketch-editor-header {
+        margin: -20px -16px 4px;
+        border-radius: 24px 24px 0 0;
+    }
+}
+
+/* Compact spacing fix for profile summary card */
+.profile-screen-body .sketch-profile-card--summary,
+.sketch-profile-card--summary {
+    gap: 12px;
+    padding: 18px;
+}
+
+.profile-screen-body .sketch-card-ribbon,
+.sketch-card-ribbon {
+    margin-bottom: 0;
+    padding: 7px 12px;
+}
+
+.profile-screen-body .sketch-profile-identity,
+.sketch-profile-identity {
+    gap: 8px;
+}
+
+.profile-screen-body .sketch-profile-avatar,
+.sketch-profile-avatar {
+    width: 132px;
+    height: 132px;
+}
+
+.profile-screen-body .sketch-profile-copy,
+.sketch-profile-copy {
+    display: grid;
+    gap: 4px;
+}
+
+.profile-screen-body .sketch-profile-copy h3,
+.sketch-profile-copy h3 {
+    font-size: 1.32rem;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.profile-screen-body .profile-identity-copy p,
+.profile-screen-body .profile-role-badge {
+    margin-top: 0;
+}
+
+.profile-screen-body .profile-role-badge,
+.profile-role-badge {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+}
+
+.profile-screen-body .profile-inline-actions,
+.profile-inline-actions {
+    gap: 8px;
+    padding-top: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+}
+
+.profile-screen-body .sketch-inline-actions .profile-inline-button,
+.profile-screen-body .sketch-inline-actions .profile-photo-upload,
+.profile-screen-body .sketch-inline-actions .profile-photo-remove,
+.sketch-inline-actions .profile-inline-button,
+.sketch-inline-actions .profile-photo-upload,
+.sketch-inline-actions .profile-photo-remove {
+    min-height: 46px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 0.86rem;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 800;
+    white-space: nowrap;
+    margin-top: 0;
+}
+
+.profile-screen-body .profile-inline-hint,
+.profile-inline-hint {
+    grid-column: 1 / -1;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    text-align: center;
+    color: #8a6848;
+    margin: 0;
+}
+
+.profile-screen-body .profile-photo-upload,
+.profile-photo-upload {
+    background: #f3dfb5;
+    border: 1px solid #e1c58f;
+    color: #6e4925;
+    box-shadow: none;
+}
+
+.profile-screen-body .profile-photo-remove,
+.profile-photo-remove {
+    justify-self: stretch;
+    box-shadow: none;
+    margin-top: 0;
+}
+
+.profile-screen-body .sketch-progress-card,
+.sketch-progress-card {
+    padding: 12px;
+    border-radius: 18px;
+}
+
+.profile-screen-body .profile-topline,
+.profile-topline {
+    margin-bottom: 6px;
+}
+
+.profile-screen-body .xp-progress-label,
+.xp-progress-label {
+    margin-top: 6px;
+    font-size: 0.78rem;
+}
+
+.profile-screen-body .sketch-stats-grid,
+.sketch-stats-grid {
+    gap: 8px;
+}
+
+.profile-screen-body .sketch-stats-grid article,
+.sketch-stats-grid article {
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+
+.profile-screen-body .profile-stats-grid span,
+.profile-stats-grid span {
+    font-size: 0.76rem;
+}
+
+.profile-screen-body .profile-stats-grid strong,
+.profile-stats-grid strong {
+    margin-top: 3px;
+    font-size: 0.78rem;
 }

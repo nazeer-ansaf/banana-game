@@ -26,9 +26,19 @@ settingsTabButtons.forEach(button => {
     button.addEventListener("click", () => activateSettingsTab(button.dataset.settingsTab || "personal"));
 });
 
+window.addEventListener("pageshow", () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+});
+
 initializeProfilePage();
 
 async function initializeProfilePage() {
+    if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
     const response = await fetch("player_data.php");
     const data = await response.json();
 
@@ -50,6 +60,7 @@ async function initializeProfilePage() {
     document.getElementById("effects-enabled").checked = Boolean(data.settings.effects_enabled);
     updateProfileIdentity(data.account.username || currentUser.username || "Player");
     setProfilePhoto(data.account.profile_photo || "", data.account.username || currentUser.username || "Player");
+    activateSettingsTab("personal");
 }
 
 async function handleSettingsSave(event) {
