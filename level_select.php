@@ -56,7 +56,7 @@ if (!isset($_SESSION['user_id'])) {
             box-shadow: 0 15px 25px rgba(0,0,0,0.2);
         }
 
-        /* --- Colors for Difficulty --- */
+        /* -- Colors for Difficulty --- */
         .level-card.easy { background: #d4f7dc; }
         .level-card.medium { background: #fff3c4; }
         .level-card.hard { background: #ffc4c4; }
