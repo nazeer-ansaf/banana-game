@@ -37,6 +37,11 @@ $profileStmt = $conn->prepare(
     "SELECT
         u.id,
         u.username,
+        u.email,
+        u.phone_number,
+        u.role,
+        u.profile_photo,
+        u.created_at,
         p.xp,
         p.coins,
         p.total_runs,
@@ -110,8 +115,19 @@ while ($row = $runsResult->fetch_assoc()) {
 
 $runsStmt->close();
 
+$settings = banana_game_get_user_settings($conn, $userId);
+
 banana_game_respond([
     "status" => "success",
+    "account" => [
+        "id" => (int) $profile["id"],
+        "username" => $profile["username"],
+        "email" => $profile["email"] ?? "",
+        "phone_number" => $profile["phone_number"] ?? "",
+        "role" => $profile["role"] ?? "player",
+        "profile_photo" => $profile["profile_photo"] ?? "",
+        "created_at" => $profile["created_at"] ?? null
+    ],
     "profile" => [
         "id" => (int) $profile["id"],
         "username" => $profile["username"],
@@ -126,6 +142,7 @@ banana_game_respond([
         "longest_streak" => (int) ($profile["longest_streak"] ?? 0),
         "last_mode" => $profile["last_mode"] ?? "campaign"
     ],
+    "settings" => $settings,
     "achievements" => $achievements,
     "recent_runs" => $recentRuns
 ]);

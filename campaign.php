@@ -4,6 +4,7 @@ require_once __DIR__ . "/session_control.php";
 banana_game_require_auth_page();
 
 $userId = (int) $_SESSION["user_id"];
+$role = (string) ($_SESSION["role"] ?? "player");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +76,8 @@ $userId = (int) $_SESSION["user_id"];
 
 <script>
 window.BANANA_USER = {
-    id: <?php echo $userId; ?>
+    id: <?php echo $userId; ?>,
+    role: <?php echo json_encode($role); ?>
 };
 </script>
 <script type="module" src="js/campaign-page.js?v=20260403a"></script>

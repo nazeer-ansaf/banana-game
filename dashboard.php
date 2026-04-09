@@ -5,6 +5,7 @@ banana_game_require_auth_page();
 
 $userId = (int) $_SESSION["user_id"];
 $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
+$role = (string) ($_SESSION["role"] ?? "player");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +13,7 @@ $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banana Puzzle Garden Dashboard</title>
-    <link rel="stylesheet" href="style.css?v=20260403a">
+    <link rel="stylesheet" href="style.css?v=20260405h">
 </head>
 <body>
 <div id="app" class="dashboard-app">
@@ -28,8 +29,15 @@ $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
                     <span class="dashboard-hero-pill">Progress</span>
                 </div>
             </div>
+            <div class="dashboard-quick-actions">
+                <a href="profile.php?view=top" class="dashboard-action-link secondary">Profile</a>
+                <?php if ($role === "admin"): ?>
+                    <a href="admin.php" class="dashboard-action-link secondary">Admin Panel</a>
+                <?php endif; ?>
+                <button type="button" id="dashboard-logout-btn" class="dashboard-action-link">Logout</button>
+            </div>
             <div class="welcome-badge" aria-hidden="true">
-                <span>BG</span>
+                <span>🍌</span>
             </div>
         </div>
 
@@ -115,9 +123,10 @@ $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
 <script>
 window.BANANA_USER = {
     id: <?php echo $userId; ?>,
-    username: <?php echo json_encode($_SESSION["username"]); ?>
+    username: <?php echo json_encode($_SESSION["username"]); ?>,
+    role: <?php echo json_encode($role); ?>
 };
 </script>
-<script type="module" src="js/dashboard-page.js?v=20260403a"></script>
+<script type="module" src="js/dashboard-page.js?v=20260405a"></script>
 </body>
 </html>

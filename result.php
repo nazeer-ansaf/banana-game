@@ -4,6 +4,7 @@ require_once __DIR__ . "/session_control.php";
 banana_game_require_auth_page();
 
 $userId = (int) $_SESSION["user_id"];
+$role = (string) ($_SESSION["role"] ?? "player");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +12,7 @@ $userId = (int) $_SESSION["user_id"];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banana Puzzle Garden Result</title>
-    <link rel="stylesheet" href="style.css?v=20260403d">
+    <link rel="stylesheet" href="style.css?v=20260405h">
 </head>
 <body class="result-page">
 <div id="app" class="play-app">
@@ -66,9 +67,10 @@ $userId = (int) $_SESSION["user_id"];
 <script>
 window.BANANA_USER = {
     id: <?php echo $userId; ?>,
-    username: <?php echo json_encode($_SESSION["username"]); ?>
+    username: <?php echo json_encode($_SESSION["username"]); ?>,
+    role: <?php echo json_encode($role); ?>
 };
 </script>
-<script type="module" src="js/result-page.js?v=20260403d"></script>
+<script type="module" src="js/result-page.js?v=20260405a"></script>
 </body>
 </html>

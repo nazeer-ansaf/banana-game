@@ -1,4 +1,4 @@
-import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js?v=20260403a";
+import { bindLeaderboardFilters, initLeaderboard } from "./leaderboard.js?v=20260405a";
 import { modeConfigs } from "./modes.js?v=20260403a";
 import { loadPlayerProgress, renderPlayerHub, formatModeLabel } from "./progression.js?v=20260403a";
 import { logoutUser } from "./user.js?v=20260403a";
