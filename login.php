@@ -89,7 +89,21 @@ if ($action === "register" || $action === "login") {
         $email = trim($_POST['email'] ?? '');
         $phoneNumber = trim($_POST['phone_number'] ?? '');
         $role = banana_game_get_new_user_role($conn);
-        $email = $email !== "" ? $email : null;
+
+        if ($email === "") {
+            banana_game_respond([
+                "status" => "error",
+                "message" => "Email is required for registration"
+            ]);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            banana_game_respond([
+                "status" => "error",
+                "message" => "Enter a valid email address"
+            ]);
+        }
+
         $phoneNumber = $phoneNumber !== "" ? $phoneNumber : null;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $insert = $conn->prepare(
@@ -175,6 +189,20 @@ if ($action === "social_login") {
         ]);
     }
 
+    if ($email === "") {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Email is required for registration"
+        ]);
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Enter a valid email address"
+        ]);
+    }
+
     $stmt = $conn->prepare("SELECT * FROM users WHERE social_id = ?");
     $stmt->bind_param("s", $social_id);
     $stmt->execute();
@@ -198,7 +226,6 @@ if ($action === "social_login") {
     }
 
     $username = generateUniqueUsername($conn, $username);
-    $email = $email !== "" ? $email : null;
     $role = banana_game_get_new_user_role($conn);
 
     $insert = $conn->prepare("INSERT INTO users (username, social_id, email, role) VALUES (?, ?, ?, ?)");

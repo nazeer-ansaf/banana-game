@@ -14,16 +14,24 @@ banana_game_require_admin_page();
 <body class="admin-ops-body">
 <div id="app" class="admin-ops-app">
     <section class="admin-ops-shell">
+        <header class="admin-compact-bar" aria-label="Admin navigation">
+            <div class="admin-compact-brand">
+                <p class="admin-compact-brand__eyebrow">Admin</p>
+                <strong>Control Room</strong>
+            </div>
+            <nav class="admin-compact-nav">
+                <a href="admin.php" class="admin-compact-link">Dashboard</a>
+                <a href="admin_overview.php" class="admin-compact-link">Overview</a>
+                <a href="admin_insights.php" class="admin-compact-link is-active" aria-current="page">Insights</a>
+                <a href="admin_users.php" class="admin-compact-link">Users</a>
+            </nav>
+        </header>
+
         <header class="admin-subpage-hero">
             <div>
                 <p class="admin-ops-eyebrow">Admin Insights</p>
                 <h1>Leaderboard and activity</h1>
                 <p class="admin-ops-subtext">Open this page for score-first monitoring, top performers, and the latest run activity without the roster getting in the way.</p>
-            </div>
-            <div class="admin-subpage-actions">
-                <a href="admin.php" class="admin-ops-button admin-ops-button--ghost">Dashboard</a>
-                <a href="admin_overview.php" class="admin-ops-button admin-ops-button--ghost">Overview</a>
-                <a href="admin_users.php" class="admin-ops-button admin-ops-button--ghost">Users</a>
             </div>
         </header>
 

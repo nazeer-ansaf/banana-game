@@ -34,7 +34,7 @@
 
         <div id="register-form" class="hidden">
             <input type="text" id="reg-username" placeholder="Username">
-            <input type="email" id="reg-email" placeholder="Email (optional)">
+            <input type="email" id="reg-email" placeholder="Email (required)" required>
             <input type="tel" id="reg-phone" placeholder="Phone for SMS reset (optional)">
             <input type="password" id="reg-password" placeholder="Password">
             <div class="password-strength hidden" id="password-strength">
@@ -52,12 +52,6 @@
             </ul>
             <input type="password" id="reg-confirm-password" placeholder="Confirm Password">
             <p class="field-feedback" id="confirm-password-feedback"></p>
-            <p class="register-tip">Tip: use a unique password you do not use anywhere else.</p>
-
-            <label class="remember">
-                <input type="checkbox" id="reg-remember-me"> Remember Me
-            </label>
-
             <div>
                 <button id="register-btn">Create Account</button>
             </div>

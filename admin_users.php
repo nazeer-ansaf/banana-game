@@ -14,17 +14,30 @@ banana_game_require_admin_page();
 <body class="admin-ops-body admin-users-screen">
 <div id="app" class="admin-ops-app">
     <section class="admin-ops-shell">
+        <header class="admin-compact-bar" aria-label="Admin navigation">
+            <div class="admin-compact-brand">
+                <p class="admin-compact-brand__eyebrow">Admin</p>
+                <strong>Control Room</strong>
+            </div>
+            <nav class="admin-compact-nav">
+                <a href="admin.php" class="admin-compact-link">Dashboard</a>
+                <a href="admin_overview.php" class="admin-compact-link">Overview</a>
+                <a href="admin_insights.php" class="admin-compact-link">Insights</a>
+                <a href="admin_users.php" class="admin-compact-link is-active" aria-current="page">Users</a>
+            </nav>
+            <div class="admin-compact-tools">
+                <button type="button" id="admin-users-refresh-btn" class="admin-compact-link admin-compact-link--strong">Refresh users</button>
+            </div>
+        </header>
+
         <header class="admin-subpage-hero admin-users-hero">
             <div>
                 <p class="admin-ops-eyebrow">Admin Users</p>
                 <h1>User management</h1>
                 <p class="admin-ops-subtext">Search accounts, review status, and apply account actions from a cleaner admin workspace.</p>
             </div>
-            <div class="admin-subpage-actions">
-                <a href="admin.php" class="admin-ops-button admin-ops-button--ghost">Dashboard</a>
-                <a href="admin_overview.php" class="admin-ops-button admin-ops-button--ghost">Overview</a>
-                <a href="admin_insights.php" class="admin-ops-button admin-ops-button--ghost">Insights</a>
-                <button type="button" id="admin-users-refresh-btn" class="admin-ops-button">Refresh users</button>
+            <div class="admin-users-hero-actions">
+                <a href="admin_create_user.php" class="admin-action-button">Create account</a>
             </div>
         </header>
 
@@ -86,7 +99,9 @@ banana_game_require_admin_page();
                     <p class="admin-panel-kicker">Users</p>
                     <h2>User management</h2>
                 </div>
-                <span class="admin-panel-badge" id="admin-roster-count">0 visible</span>
+                <div class="admin-users-heading-actions">
+                    <span class="admin-panel-badge" id="admin-roster-count">0 visible</span>
+                </div>
             </div>
 
             <p class="settings-feedback" id="admin-feedback"></p>

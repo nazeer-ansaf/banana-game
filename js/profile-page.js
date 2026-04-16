@@ -47,19 +47,23 @@ async function initializeProfilePage() {
         return;
     }
 
-    const state = await loadPlayerProgress(currentUser);
-    renderPlayerHub(state);
+    if (currentUser.role !== "admin") {
+        const state = await loadPlayerProgress(currentUser);
+        renderPlayerHub(state);
+    }
 
     document.getElementById("profile-role-pill").textContent = data.account.role === "admin" ? "Admin" : "Player";
     document.getElementById("profile-username").value = data.account.username || "";
     document.getElementById("profile-email").value = data.account.email || "";
     document.getElementById("profile-phone").value = data.account.phone_number || "";
-    document.getElementById("profile-member-since").value = formatMemberSince(data.account.created_at);
+    const memberSince = formatMemberSince(data.account.created_at);
+    document.getElementById("profile-member-since").value = memberSince;
     document.getElementById("sound-enabled").checked = Boolean(data.settings.sound_enabled);
     document.getElementById("music-enabled").checked = Boolean(data.settings.music_enabled);
     document.getElementById("effects-enabled").checked = Boolean(data.settings.effects_enabled);
     updateProfileIdentity(data.account.username || currentUser.username || "Player");
     setProfilePhoto(data.account.profile_photo || "", data.account.username || currentUser.username || "Player");
+    updateAdminSummary(data.account, memberSince);
     activateSettingsTab("personal");
 }
 
@@ -248,4 +252,22 @@ function setFeedback(id, message, isError = false) {
 
     element.textContent = message || "";
     element.className = `settings-feedback${message ? (isError ? " error" : " success") : ""}`;
+}
+
+function updateAdminSummary(account, memberSince) {
+    const roleSummary = document.getElementById("profile-role-summary");
+    const memberSinceSummary = document.getElementById("profile-member-since-summary");
+    const emailSummary = document.getElementById("profile-email-summary");
+
+    if (roleSummary) {
+        roleSummary.textContent = account.role === "admin" ? "Admin" : "Player";
+    }
+
+    if (memberSinceSummary) {
+        memberSinceSummary.textContent = memberSince;
+    }
+
+    if (emailSummary) {
+        emailSummary.textContent = account.email || "Add email";
+    }
 }

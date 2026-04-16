@@ -39,6 +39,8 @@ async function loadUsersPage(showMessage = false) {
         if (showMessage) {
             setFeedback("Users refreshed");
         }
+
+        showCreateSuccessMessage();
     } catch (error) {
         setFeedback("Unable to load users right now", true);
     }
@@ -331,4 +333,18 @@ function getInitials(name) {
         .slice(0, 2)
         .map(part => part.charAt(0).toUpperCase())
         .join("") || "P";
+}
+
+function showCreateSuccessMessage() {
+    const params = new URLSearchParams(window.location.search);
+    const createdUser = params.get("created");
+    if (!createdUser) {
+        return;
+    }
+
+    setFeedback(`Account created for ${createdUser}`);
+    params.delete("created");
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash}`;
+    window.history.replaceState({}, "", nextUrl);
 }

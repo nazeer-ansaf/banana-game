@@ -130,8 +130,13 @@ export async function registerUser({
     confirmPassword,
     rememberMe = false
 }) {
-    if (!username || !password || !confirmPassword) {
-        alert("Username, password, and confirm password are required");
+    if (!username || !email || !password || !confirmPassword) {
+        alert("Username, email, password, and confirm password are required");
+        return null;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+        alert("Enter a valid email address");
         return null;
     }
 
@@ -152,7 +157,7 @@ export async function registerUser({
 }
 
 export async function socialAuthUser({ username, email, socialId, rememberMe = true }) {
-    if (!username || !socialId) {
+    if (!username || !socialId || !email) {
         alert("Social login information is incomplete");
         return null;
     }

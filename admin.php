@@ -18,23 +18,33 @@ $username = htmlspecialchars((string) ($_SESSION["username"] ?? "Admin"), ENT_QU
 <body class="admin-ops-body">
 <div id="app" class="admin-ops-app">
     <section class="admin-ops-shell">
+        <header class="admin-compact-bar" aria-label="Admin navigation">
+            <div class="admin-compact-brand">
+                <p class="admin-compact-brand__eyebrow">Admin</p>
+                <strong>Control Room</strong>
+            </div>
+            <nav class="admin-compact-nav">
+                <a href="admin.php" class="admin-compact-link is-active" aria-current="page">Dashboard</a>
+                <a href="admin_overview.php" class="admin-compact-link">Overview</a>
+                <a href="admin_insights.php" class="admin-compact-link">Insights</a>
+                <a href="admin_users.php" class="admin-compact-link">Users</a>
+            </nav>
+            <div class="admin-compact-tools">
+                <a href="profile.php" class="admin-compact-link">Profile</a>
+                <button type="button" id="admin-logout-btn" class="admin-compact-link admin-compact-link--strong">Logout</button>
+            </div>
+        </header>
+
         <header class="admin-ops-hero">
             <div class="admin-ops-hero-copy">
                 <p class="admin-ops-eyebrow">Banana Puzzle Garden Control Room</p>
                 <h1>Admin dashboard for <?php echo $username; ?></h1>
-                <p class="admin-ops-subtext">Use the admin dashboard as a home screen. Each feature button opens a full detail page so you can work without endless scrolling.</p>
+                <p class="admin-ops-subtext">Use the dashboard as a home screen. The compact bar keeps page switching close by, so this area can stay focused on status and quick entry points.</p>
                 <div class="admin-ops-hero-tags" aria-hidden="true">
                     <span>Overview page</span>
                     <span>Insights page</span>
                     <span>User management page</span>
                 </div>
-            </div>
-            <div class="admin-ops-hero-actions">
-                <a href="admin_overview.php" class="admin-ops-button admin-ops-button--ghost">Overview</a>
-                <a href="admin_insights.php" class="admin-ops-button admin-ops-button--ghost">Insights</a>
-                <a href="admin_users.php" class="admin-ops-button admin-ops-button--ghost">Users</a>
-                <a href="profile.php" class="admin-ops-button admin-ops-button--ghost">Profile</a>
-                <button type="button" id="admin-logout-btn" class="admin-ops-button">Logout</button>
             </div>
         </header>
 

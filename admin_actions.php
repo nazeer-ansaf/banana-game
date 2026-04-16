@@ -23,6 +23,102 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $action = trim((string) ($_POST["action"] ?? ""));
+
+if ($action === "create_user") {
+    $username = trim((string) ($_POST["username"] ?? ""));
+    $email = trim((string) ($_POST["email"] ?? ""));
+    $phoneNumber = trim((string) ($_POST["phone_number"] ?? ""));
+    $role = trim((string) ($_POST["role"] ?? "player"));
+    $password = trim((string) ($_POST["password"] ?? ""));
+    $confirmPassword = trim((string) ($_POST["confirm_password"] ?? ""));
+
+    if ($username === "" || $email === "" || $password === "" || $confirmPassword === "") {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Username, email, password, and confirmation are required"
+        ]);
+    }
+
+    if (!in_array($role, ["admin", "player"], true)) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Choose a valid role"
+        ]);
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Enter a valid email address"
+        ]);
+    }
+
+    if ($password !== $confirmPassword) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Passwords do not match"
+        ]);
+    }
+
+    if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/", $password)) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Password must include upper, lower, number, special character, and 8+ characters"
+        ]);
+    }
+
+    $duplicateStmt = $conn->prepare(
+        "SELECT id
+         FROM users
+         WHERE username = ? OR email = ?
+         LIMIT 1"
+    );
+    $duplicateStmt->bind_param("ss", $username, $email);
+    $duplicateStmt->execute();
+    $duplicateUser = $duplicateStmt->get_result()->fetch_assoc();
+    $duplicateStmt->close();
+
+    if ($duplicateUser) {
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Username or email is already in use"
+        ]);
+    }
+
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $phoneValue = $phoneNumber !== "" ? $phoneNumber : null;
+
+    $createStmt = $conn->prepare(
+        "INSERT INTO users (username, password, email, phone_number, role)
+         VALUES (?, ?, ?, ?, ?)"
+    );
+    $createStmt->bind_param("sssss", $username, $passwordHash, $email, $phoneValue, $role);
+
+    if (!$createStmt->execute()) {
+        $createStmt->close();
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Unable to create the user account"
+        ]);
+    }
+
+    $newUserId = (int) $createStmt->insert_id;
+    $createStmt->close();
+
+    banana_game_create_profile_if_missing($conn, $newUserId);
+    banana_game_create_settings_if_missing($conn, $newUserId);
+
+    banana_game_respond([
+        "status" => "success",
+        "message" => ucfirst($role) . " account created",
+        "user" => [
+            "id" => $newUserId,
+            "username" => $username,
+            "role" => $role
+        ]
+    ]);
+}
+
 $targetUserId = (int) ($_POST["user_id"] ?? 0);
 
 if ($targetUserId <= 0) {
