@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/session_control.php";
 
-banana_game_require_auth_page();
+banana_game_require_player_page();
 
 $userId = (int) $_SESSION["user_id"];
 $role = (string) ($_SESSION["role"] ?? "player");

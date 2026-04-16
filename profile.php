@@ -13,7 +13,7 @@ $role = (string) ($_SESSION["role"] ?? "player");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banana Puzzle Garden Profile</title>
-    <link rel="stylesheet" href="style.css?v=20260409o">
+    <link rel="stylesheet" href="style.css?v=20260413j">
 </head>
 <body class="profile-screen-body">
 <div id="app" class="dashboard-app profile-app sketch-profile-app">
@@ -33,8 +33,8 @@ $role = (string) ($_SESSION["role"] ?? "player");
             </div>
         </div>
 
-        <form id="profile-settings-form" class="dashboard-grid profile-grid profile-settings-layout sketch-profile-layout" enctype="multipart/form-data">
-            <section class="dashboard-card dashboard-card--profile profile-summary-card profile-showcase-card sketch-profile-card sketch-profile-card--summary">
+        <form id="profile-settings-form" class="profile-page-grid profile-grid profile-settings-layout sketch-profile-layout" enctype="multipart/form-data">
+            <section class="profile-page-card profile-page-card--summary profile-summary-card profile-showcase-card sketch-profile-card sketch-profile-card--summary">
                 <div class="sketch-card-ribbon">
                     <span>Overview</span>
                 </div>
@@ -101,7 +101,7 @@ $role = (string) ($_SESSION["role"] ?? "player");
                 </div>
             </section>
 
-            <section class="dashboard-card dashboard-card--modes settings-card profile-details-card sample-inspired-card compact-settings-card sketch-profile-card sketch-profile-card--editor">
+            <section class="profile-page-card profile-page-card--editor settings-card profile-details-card sample-inspired-card compact-settings-card sketch-profile-card sketch-profile-card--editor">
                 <div class="sample-card-header sketch-editor-header">
                     <p class="panel-kicker">Settings Workspace</p>
                     <strong>Open the view first, then switch between personal, sound, and security.</strong>

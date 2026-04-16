@@ -23,12 +23,19 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $action = trim((string) ($_POST["action"] ?? ""));
+$targetUserId = (int) ($_POST["user_id"] ?? 0);
+
+if ($targetUserId <= 0) {
+    banana_game_respond([
+        "status" => "error",
+        "message" => "User selection is required"
+    ]);
+}
 
 if ($action === "update_role") {
-    $targetUserId = (int) ($_POST["user_id"] ?? 0);
     $role = trim((string) ($_POST["role"] ?? "player"));
 
-    if ($targetUserId <= 0 || !in_array($role, ["admin", "player"], true)) {
+    if (!in_array($role, ["admin", "player"], true)) {
         banana_game_respond([
             "status" => "error",
             "message" => "Invalid role update request"
@@ -58,6 +65,78 @@ if ($action === "update_role") {
     banana_game_respond([
         "status" => "success",
         "message" => "User role updated"
+    ]);
+}
+
+if ($action === "reset_progress") {
+    $conn->begin_transaction();
+
+    try {
+        $deleteScores = $conn->prepare("DELETE FROM scores WHERE user_id = ?");
+        $deleteScores->bind_param("i", $targetUserId);
+        $deleteScores->execute();
+        $deleteScores->close();
+
+        $deleteAchievements = $conn->prepare("DELETE FROM user_achievements WHERE user_id = ?");
+        $deleteAchievements->bind_param("i", $targetUserId);
+        $deleteAchievements->execute();
+        $deleteAchievements->close();
+
+        $resetProfile = $conn->prepare(
+            "UPDATE player_profiles
+             SET xp = 0,
+                 coins = 0,
+                 total_runs = 0,
+                 wins = 0,
+                 best_score = 0,
+                 best_level = 0,
+                 total_correct = 0,
+                 total_wrong = 0,
+                 longest_streak = 0,
+                 last_mode = 'campaign'
+             WHERE user_id = ?"
+        );
+        $resetProfile->bind_param("i", $targetUserId);
+        $resetProfile->execute();
+        $resetProfile->close();
+
+        $conn->commit();
+    } catch (Throwable $throwable) {
+        $conn->rollback();
+        banana_game_respond([
+            "status" => "error",
+            "message" => "Unable to reset player progress"
+        ]);
+    }
+
+    banana_game_respond([
+        "status" => "success",
+        "message" => "Player progress reset"
+    ]);
+}
+
+if ($action === "clear_photo") {
+    $photoStmt = $conn->prepare("SELECT profile_photo FROM users WHERE id = ? LIMIT 1");
+    $photoStmt->bind_param("i", $targetUserId);
+    $photoStmt->execute();
+    $photo = $photoStmt->get_result()->fetch_assoc()["profile_photo"] ?? "";
+    $photoStmt->close();
+
+    $updateStmt = $conn->prepare("UPDATE users SET profile_photo = NULL WHERE id = ?");
+    $updateStmt->bind_param("i", $targetUserId);
+    $updateStmt->execute();
+    $updateStmt->close();
+
+    if (is_string($photo) && str_starts_with($photo, "uploads/")) {
+        $fullPath = __DIR__ . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR, $photo);
+        if (is_file($fullPath)) {
+            @unlink($fullPath);
+        }
+    }
+
+    banana_game_respond([
+        "status" => "success",
+        "message" => "Profile photo cleared"
     ]);
 }
 

@@ -53,7 +53,7 @@ loginBtn.addEventListener("click", async () => {
     );
 
     if (user) {
-        window.location.href = "dashboard.php";
+        redirectToUserHome(user);
     }
 });
 
@@ -68,7 +68,7 @@ registerBtn.addEventListener("click", async () => {
     });
 
     if (user) {
-        window.location.href = "dashboard.php";
+        redirectToUserHome(user);
     }
 });
 
@@ -86,7 +86,7 @@ window.handleCredentialResponse = async response => {
         });
 
         if (user) {
-            window.location.href = "dashboard.php";
+            redirectToUserHome(user);
         }
     } catch (error) {
         console.error("Social login error:", error);
@@ -142,4 +142,9 @@ function updateConfirmPasswordUI() {
 
     confirmPasswordFeedback.textContent = "Passwords do not match yet";
     confirmPasswordFeedback.className = "field-feedback error";
+}
+
+function redirectToUserHome(user) {
+    const destination = user?.role === "admin" ? "admin.php" : "dashboard.php";
+    window.location.href = destination;
 }

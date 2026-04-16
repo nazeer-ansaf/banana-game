@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/session_control.php";
 
-banana_game_require_auth_page();
+banana_game_require_player_page();
 
 $userId = (int) $_SESSION["user_id"];
 $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
@@ -13,7 +13,7 @@ $role = (string) ($_SESSION["role"] ?? "player");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banana Puzzle Garden Dashboard</title>
-    <link rel="stylesheet" href="style.css?v=20260405h">
+    <link rel="stylesheet" href="style.css?v=20260413g">
 </head>
 <body>
 <div id="app" class="dashboard-app">
@@ -24,13 +24,13 @@ $role = (string) ($_SESSION["role"] ?? "player");
                 <h2 id="welcome-user">Welcome <?php echo $username; ?></h2>
                 <p class="welcome-subtext">Choose a mode, track your progress, and jump into the next banana run.</p>
                 <div class="dashboard-hero-pills" aria-hidden="true">
-                    <span class="dashboard-hero-pill">Profile</span>
+                    <span class="dashboard-hero-pill">Start Game</span>
                     <span class="dashboard-hero-pill">Modes</span>
                     <span class="dashboard-hero-pill">Progress</span>
                 </div>
             </div>
             <div class="dashboard-quick-actions">
-                <a href="profile.php?view=top" class="dashboard-action-link secondary">Profile</a>
+                <a href="#game-modes" class="dashboard-action-link secondary">Start Game</a>
                 <?php if ($role === "admin"): ?>
                     <a href="admin.php" class="dashboard-action-link secondary">Admin Panel</a>
                 <?php endif; ?>
@@ -42,21 +42,23 @@ $role = (string) ($_SESSION["role"] ?? "player");
         </div>
 
         <div class="dashboard-grid">
-            <section class="profile-panel dashboard-card dashboard-card--profile">
+            <section class="profile-panel dashboard-card dashboard-card--profile dashboard-profile-card">
                 <div class="panel-heading">
                     <p class="panel-kicker">Player Profile</p>
                     <strong id="profile-rank">Rank 1</strong>
                 </div>
-                <div class="profile-topline">
-                    <span id="profile-xp">0 XP</span>
-                    <span class="profile-coins">Coins <strong id="profile-coin-count">0</strong></span>
+                <div class="dashboard-profile-progress profile-progress-card">
+                    <div class="profile-topline">
+                        <span id="profile-xp">0 XP</span>
+                        <span class="profile-coins">Coins <strong id="profile-coin-count">0</strong></span>
+                    </div>
+                    <div class="xp-progress">
+                        <span id="xp-progress-fill"></span>
+                    </div>
+                    <p class="xp-progress-label" id="xp-progress-label">0 / 250 to next rank</p>
                 </div>
-                <div class="xp-progress">
-                    <span id="xp-progress-fill"></span>
-                </div>
-                <p class="xp-progress-label" id="xp-progress-label">0 / 250 to next rank</p>
 
-                <div class="profile-stats-grid">
+                <div class="profile-stats-grid sketch-stats-grid dashboard-profile-stats">
                     <article>
                         <span>Best Score</span>
                         <strong id="profile-best-score">0</strong>
@@ -82,9 +84,18 @@ $role = (string) ($_SESSION["role"] ?? "player");
                         <strong id="profile-last-mode">Campaign</strong>
                     </article>
                 </div>
+
+                <div class="dashboard-profile-footer">
+                    <div class="dashboard-profile-footer-copy">
+                        <p class="dashboard-profile-footer-label">Profile</p>
+                        <strong>Manage your player space</strong>
+                        <span><?php echo $role === "admin" ? "Open your profile to update account details and admin-ready settings." : "Open your profile to update account details and preferences."; ?></span>
+                    </div>
+                    <a href="profile.php?view=top" class="dashboard-profile-footer-link">Profile</a>
+                </div>
             </section>
 
-            <section class="mode-panel dashboard-mode-panel dashboard-card dashboard-card--modes">
+            <section id="game-modes" class="mode-panel dashboard-mode-panel dashboard-card dashboard-card--modes">
                 <div class="panel-heading">
                     <p class="panel-kicker">Game Modes</p>
                     <strong>Choose your run</strong>
@@ -127,6 +138,6 @@ window.BANANA_USER = {
     role: <?php echo json_encode($role); ?>
 };
 </script>
-<script type="module" src="js/dashboard-page.js?v=20260405a"></script>
+<script type="module" src="js/dashboard-page.js?v=20260409a"></script>
 </body>
 </html>

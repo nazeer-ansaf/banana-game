@@ -128,11 +128,23 @@ if ($action === "register" || $action === "login") {
     }
 
     $user = $result->fetch_assoc();
-    if (!password_verify($password, $user['password'])) {
+    $storedPassword = (string) ($user["password"] ?? "");
+    $passwordMatches = $storedPassword !== "" && password_verify($password, $storedPassword);
+    $legacyPlaintextMatch = $storedPassword !== "" && hash_equals($storedPassword, $password);
+
+    if (!$passwordMatches && !$legacyPlaintextMatch) {
         banana_game_respond([
             "status" => "error",
             "message" => "Wrong password"
         ]);
+    }
+
+    if ($legacyPlaintextMatch) {
+        $upgradedPasswordHash = password_hash($password, PASSWORD_DEFAULT);
+        $upgradeStmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $upgradeStmt->bind_param("si", $upgradedPasswordHash, $user["id"]);
+        $upgradeStmt->execute();
+        $upgradeStmt->close();
     }
 
     banana_game_create_profile_if_missing($conn, (int) $user['id']);

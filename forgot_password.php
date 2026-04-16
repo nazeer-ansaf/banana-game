@@ -118,8 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $messageClass !== "error") {
             <button type="submit">Send Reset Code</button>
         </form>
 
-        <p class="auth-meta">For email reset, add your SMTP settings in <code>mail_config.php</code> and set <code>enabled</code> to <code>true</code>. SMS reset still needs a provider like Twilio.</p>
-
+        
         <div class="auth-actions">
             <a href="reset_password.php" class="auth-link-btn">I Have A Code</a>
             <a href="index.html" class="auth-link-btn secondary">Back to Login</a>

@@ -188,6 +188,35 @@ function banana_game_require_admin_json(): void
     exit();
 }
 
+function banana_game_require_player_page(string $redirect = "admin.php"): void
+{
+    banana_game_require_auth_page();
+
+    if (!banana_game_is_admin()) {
+        return;
+    }
+
+    header("Location: {$redirect}");
+    exit();
+}
+
+function banana_game_require_player_json(): void
+{
+    banana_game_require_auth_json();
+
+    if (!banana_game_is_admin()) {
+        return;
+    }
+
+    header("Content-Type: application/json");
+    http_response_code(403);
+    echo json_encode([
+        "status" => "error",
+        "message" => "Player access required"
+    ]);
+    exit();
+}
+
 function banana_game_attempt_remember_login(): void
 {
     $rememberValue = $_COOKIE[BANANA_GAME_REMEMBER_COOKIE] ?? "";

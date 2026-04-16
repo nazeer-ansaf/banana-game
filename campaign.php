@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/session_control.php";
 
-banana_game_require_auth_page();
+banana_game_require_player_page();
 
 $userId = (int) $_SESSION["user_id"];
 $role = (string) ($_SESSION["role"] ?? "player");
@@ -32,7 +32,7 @@ $role = (string) ($_SESSION["role"] ?? "player");
             <div class="campaign-hero">
                 <div>
                     <p class="campaign-kicker">Banana Run Mode</p>
-                    <h3>10 levels. One life. No skips.</h3>
+                    <h3>10 levels. No skips.</h3>
                     <p class="campaign-copy">Start at Level 1 and survive the full sequence. Every stage gets faster, harsher, and more competitive.</p>
                 </div>
                 <div class="campaign-orb" aria-hidden="true">

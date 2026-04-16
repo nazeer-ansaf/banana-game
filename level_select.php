@@ -1,11 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . "/session_control.php";
 
-// Redirect to login if not logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.html");
-    exit();
-}
+banana_game_require_player_page();
 ?>
 
 <!DOCTYPE html>

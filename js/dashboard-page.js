@@ -27,14 +27,18 @@ function renderModeCards() {
 
     modeCardContainer.innerHTML = "";
 
-    Object.values(modeConfigs).forEach(mode => {
+    Object.values(modeConfigs).forEach((mode, index) => {
         const playHref = mode.key === "campaign"
             ? "campaign.php"
             : `play.php?mode=${encodeURIComponent(mode.key)}`;
         const card = document.createElement("article");
-        card.className = "dashboard-mode-card";
+        card.className = `dashboard-mode-card dashboard-mode-card--${mode.key}`;
+        card.style.setProperty("--card-index", String(index));
         card.innerHTML = `
-            <p class="panel-kicker">${mode.kicker}</p>
+            <div class="dashboard-mode-card-topline">
+                <p class="panel-kicker">${mode.kicker}</p>
+                <span class="dashboard-mode-chip">${mode.levels.length} stages</span>
+            </div>
             <h3>${formatModeLabel(mode.key)}</h3>
             <p>${mode.description}</p>
             <div class="dashboard-mode-meta">
